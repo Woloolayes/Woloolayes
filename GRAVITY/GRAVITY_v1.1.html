@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+<style>
+
+#canvas{
+	
+	position: absolute;	
+	top: 230px;
+	left: 480px;
+	border:1px solid #FF0000;
+	/*background-color: #000000;*/
+	visibility: visible;
+	}
+
+
+
+
+
+</style>
+
+<script>
+
+//var i=0;
+//var j=0;
+
+var posicionesx=[
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50)];
+
+var posicionesy=[
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50)];
+
+var velocidadesx=[
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10)];
+
+var velocidadesy=[
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10)];
+
+var radios=[
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10)];
+
+
+
+
+
+function comenzar(){
+	canvas = document.getElementById('canvas');
+	c = canvas.getContext('2d');
+
+	color1=getRandomColor();
+	color2=getRandomColor();
+	color3=getRandomColor();
+	color4=getRandomColor();
+	color5=getRandomColor();
+
+	
+
+	setInterval(animacion,32);
+
+}
+
+
+
+function animacion(){
+
+	
+
+	c.clearRect(0,0,960,540);
+
+	dibujacirculo(color1,c,posicionesx[0],posicionesy[0],radios[0]);
+	dibujacirculo(color2,c,posicionesx[1],posicionesy[1],radios[1]);
+	dibujacirculo(color3,c,posicionesx[2],posicionesy[2],radios[2]);
+	dibujacirculo(color4,c,posicionesx[3],posicionesy[3],radios[3]);
+	dibujacirculo(color5,c,posicionesx[4],posicionesy[4],radios[4]);
+	
+	for (let i=0; i<5; i++){ 
+		// Ajusta nueva X según Vx
+		//document.getElementById('texto').innerHTML=i;
+		posicionesx[i]+=velocidadesx[i];
+		//detecta choque con paredes en el eje X para reposicionar y cambiar el sentido
+		if (posicionesx[i]<=0+radios[i] || posicionesx[i]>=960-radios[i]){
+			if (posicionesx[i]<radios[i]){ // reposicionar sobre pared izquierda
+				posicionesx[i]=radios[i];
+			}else if (posicionesx[i]>960-radios[i]){ // reposicionar sobre pared derecha
+				posicionesx[i]=960-radios[i];
+			}
+			velocidadesx[i]*=-1;} // invierte la componente de velocidad perdendicular a la pared (horizontal)
+		// Ajusta nueva Y según Vy
+		posicionesy[i]+=velocidadesy[i];			
+		//detecta choque con paredes en el eje Y para reposicionar y cambiar el sentido
+		if (posicionesy[i]<=0+radios[i] || posicionesy[i]>=540-radios[i]){
+			if (posicionesy[i]<radios[i]){ // reposicionar sobre pared superior
+				posicionesy[i]=radios[i];
+			}else if (posicionesy[i]>540-radios[i]){ // reposicionar sobre pared inferior
+				posicionesy[i]=540-radios[i]
+			}
+			velocidadesy[i]*=-1;} // invierte la componente de velocidad perpendicular a la pared (vertical)
+		//detectar colisiones con las demas particulas		
+		for (let j=0; j<5; j++){ 
+			if (j==i){continue;}
+			
+			let distanciax=Math.abs(posicionesx[i]-posicionesx[j]);
+			let distanciay=Math.abs(posicionesy[i]-posicionesy[j]);
+			let distancia=Math.sqrt(Math.pow(distanciax,2)+Math.pow(distanciay,2));
+			// Calculo nuevas velocidades
+			if (distancia>radios[i]+radios[j]){continue;}
+				// Hallamos los angulos que forman la velocidad de A y la de B respectivamente con la linea que une los centros de ambas particulas
+				let alfa=Math.acos((velocidadesx[i]*(posicionesx[j]-posicionesx[i])+velocidadesy[i]*(posicionesy[j]-posicionesy[i]))/(Math.sqrt(Math.pow(velocidadesx[i],2)+Math.pow(velocidadesy[i],2))*Math.sqrt(Math.pow(posicionesx[j]-posicionesx[i],2)+Math.pow(posicionesy[j]-posicionesy[i],2))));
+
+				let beta=Math.PI-Math.acos((velocidadesx[j]*(posicionesx[i]-posicionesx[j])+velocidadesy[j]*(posicionesy[i]-posicionesy[j]))/(Math.sqrt(Math.pow(velocidadesx[j],2)+Math.pow(velocidadesy[j],2))*Math.sqrt(Math.pow(posicionesx[i]-posicionesx[j],2)+Math.pow(posicionesy[i]-posicionesy[j],2))));
+				// Calculamos las componentes tangencial y normal al plano de choque de las velocidades de ambas particulas. Solo la normal afecta
+				let VANx=velocidadesx[i]*Math.sin(alfa);
+				let VANy=velocidadesy[i]*Math.sin(alfa);
+
+				let VATx=velocidadesx[i]*Math.cos(alfa);
+				let VATy=velocidadesy[i]*Math.cos(alfa);
+
+
+				let VBNx=velocidadesx[j]*Math.sin(beta);
+				let VBNy=velocidadesy[j]*Math.sin(beta);
+
+				let VBTx=velocidadesx[j]*Math.cos(beta);
+				let VBTy=velocidadesy[j]*Math.cos(beta);
+
+				// trabajaremos con el modulo de las velocidades normales. primero calculamos sus vectores unitarios para despues multiplicar por los resultados
+
+				let moduloVAN=Math.sqrt(Math.pow(VANx,2)+Math.pow(VANy,2));
+				let moduloVBN=Math.sqrt(Math.pow(VBNx,2)+Math.pow(VBNy,2));
+
+				let versorANx=VANx/moduloVAN;
+				let versorANy=VANy/moduloVAN;
+
+				let versorBNx=VBNx/moduloVBN;
+				let versorBNy=VBNy/moduloVBN;
+
+
+				// Calculamos las velocidades normales despues del choque
+
+				let UAN=(moduloVAN*(Math.pow(radios[i],3)-Math.pow(radios[j],3))+2*moduloVBN*Math.pow(radios[j],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
+				let UBN=(moduloVBN*(Math.pow(radios[j],3)-Math.pow(radios[i],3))+2*moduloVAN*Math.pow(radios[i],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
+
+				// Lo anterior son modulos. Multiplicamos por sus versores para tener sus componentes vectoriales
+
+				let UANx=UAN*versorANx;
+				let UANy=UAN*versorANy;
+
+				let UBNx=UBN*versorBNx;
+				let UBNy=UBN*versorBNy;
+
+				// Sumamos estas componentes normales despues del choque con las tangenciales que no cambian y ya tenemos las nuevas velocidades
+
+				let UAx=UANx+VATx;
+				let UAy=UANy+VATy;
+
+				let UBx=UBNx+VBTx;
+				let UBy=UBNy+VBTy;
+
+
+				velocidadesx[i]=UAx;
+				velocidadesy[i]=UAy;
+
+				velocidadesx[j]=UBx;
+				velocidadesy[j]=UBy;
+		} // fin del bucle for interno			
+	} // fin del bucle for externo
+} // fin de la funcion animacion
+
+
+function dibujacirculo(color,c,x,y,radio){
+	c.beginPath();
+	c.arc(x, y, radio, 0, 2 * Math.PI);
+	c.closePath();
+	c.fillStyle=color;
+	c.fill();
+}
+
+
+function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+
+
+
+window.addEventListener("load",comenzar,false);
+
+</script>
+
+</head>
+
+<body>
+
+<p id="texto">Hola</p>
+
+
+<canvas id="canvas" width="960" height="540">
+Su navegador no soporta el elemento canvas
+<canvas>
+
+
+
+</body>
+</html>

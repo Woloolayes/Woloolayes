@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Puzzle Nº1</title>
+<link rel="stylesheet" href="puzzle1.css"/>
+
+<script>
+
+//DECLARACIÓN VARIABLES GLOBALES.
+
+  var zonas=[
+  "z11", "z21", "z31", "z41", "z51", "z61",
+  "z12", "z22", "z32", "z42", "z52", "z62",
+  "z13", "z23", "z33", "z43", "z53", "z63",     //  VECTOR CON LAS ID DE LAS 24+1 ZONAS.
+  "z14", "z24", "z34", "z44", "z54", "z64",
+  "z65"];
+
+  var piezas=[
+  "imagenes/a1.jpg", "imagenes/b1.jpg", "imagenes/c1.jpg", "imagenes/d1.jpg", "imagenes/e1.jpg", "imagenes/f1.jpg",
+  "imagenes/a2.jpg", "imagenes/b2.jpg", "imagenes/c2.jpg", "imagenes/d2.jpg", "imagenes/e2.jpg", "imagenes/f2.jpg",
+  "imagenes/a3.jpg", "imagenes/b3.jpg", "imagenes/c3.jpg", "imagenes/d3.jpg", "imagenes/e3.jpg", "imagenes/f3.jpg",     //  VECTOR CON LAS URL DE LAS 24 IMÁGENES-PIEZAS.
+  "imagenes/a4.jpg", "imagenes/b4.jpg", "imagenes/c4.jpg", "imagenes/d4.jpg", "imagenes/e4.jpg", "imagenes/f4.jpg"];
+
+  var mezcla=1; //  1 = REPARTIR PIEZAS ALEATORIO; 0 = NADA.
+
+  var orden; // VECTOR ALEATORIO ORDEN INICIAL PIEZAS.
+
+  var hueco="z65";
+
+  var laopcion;
+
+  var columnaorigen;
+  var filaorigen;
+  
+  var loop=0;
+
+  var time=1000;
+
+  var mov = 0; // cuenta los movimientos totales del juego.
+
+  var espacio = "\u00a0";
+
+  var completas = 0; // cuenta las piezas que están en su sitio.
+
+  var paratiempo = 0;
+
+  var horas = 0;    // variables para el reloj
+  var minutos = 0;
+  var segundos = 0;
+  var rellenomin = "0";
+  var rellenosec = "0";
+  
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function comenzar(){
+
+marcador = document.getElementById("marcador");
+porcentaje = document.getElementById("porcentaje");
+movimientos = document.getElementById("movimientos");
+tiempo = document.getElementById("tiempo");
+
+document.getElementById("sintonia").currentTime=0;
+document.getElementById("sintonia").play();
+document.getElementById('text').innerHTML="Así quedará cuando lo hayas terminado...";
+
+if (mezcla==1){  
+  
+  window.setTimeout(function(){
+  document.getElementById("risaduende").currentTime=0;
+  document.getElementById("risaduende").play();
+  }, 6000); 
+
+  window.setTimeout(function(){
+  document.getElementById("risaduende").pause();
+  }, 11000); 
+
+  window.setTimeout(function(){
+  document.getElementById('text').innerHTML="Pero no va a ser fácil, jeje."; 
+  mezclar(hueco);
+  }, 4000); //  DESORDENA LAS PIEZAS.
+
+  window.setTimeout(function(){
+    for (let i=0; i<zonas.length; i++){
+      if (document.getElementById(zonas[i]).innerHTML==""){
+        continue;
+      }
+      if (document.getElementById(zonas[i]).firstChild.src.substring(document.getElementById(zonas[i]).firstChild.src.length - 15) == piezas[i]){
+      completas += 1;
+      }
+    }
+    porcentaje.innerHTML = Math.round(100*completas/24) + " % completado.";
+    movimientos.innerHTML = mov + " movimientos.";
+    tiempo.innerHTML = espacio.repeat(10) + rellenomin + minutos + ":" + rellenosec + segundos;
+    muestrareloj();
+  },11000);
+
+  window.setTimeout(function(){document.getElementById('text').innerHTML="";}, 8500);
+
+  mezcla=0; // NO VOLVER A MEZCLAR.  
+}
+
+
+
+for (let i=0; i<zonas.length; i++){  
+  document.getElementById(zonas[i]).addEventListener("drop", soltar, false);
+  document.getElementById(zonas[i]).addEventListener("dragenter",function(e){e.preventDefault();},false);
+  document.getElementById(zonas[i]).addEventListener("dragleave",function(e){e.preventDefault();},false);
+  document.getElementById(zonas[i]).addEventListener("dragover",function(e){e.preventDefault();},false);
+
+  if (zonas[i]==hueco){
+    continue;
+  }
+
+  document.getElementById(zonas[i]).firstChild.addEventListener("dragstart", arrastrar, false);
+  document.getElementById(zonas[i]).firstChild.addEventListener("dragend", function(e){e.preventDefault();}, false);
+} 
+}// FIN COMENZAR.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function arrastrar(e){
+
+  var elemento=e.target;
+
+  e.dataTransfer.setData("Text", elemento.parentNode.getAttribute("id"));
+  //e.dataTransfer.setDragImage(e.target, 0, 0);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function soltar(e){
+
+  e.preventDefault();
+
+  idorigen=e.dataTransfer.getData("Text");
+
+  id1=idorigen.substring(1,3);
+  zonaorigen=parseInt(id1);
+
+  pieza=document.getElementById(idorigen).firstChild;
+
+  iddestino=e.target.getAttribute("id");
+
+  id2=iddestino.substring(1,3); 
+  zonadestino=parseInt(id2);
+ 
+
+ 
+  decision=Math.abs(zonaorigen-zonadestino);
+
+  if ((paratiempo == 0) && (decision==1||decision==10)){
+     
+   document.getElementById(iddestino).appendChild(pieza);  
+   
+   document.getElementById(idorigen).innerHTML="";
+   document.getElementById("click").currentTime=0;
+   document.getElementById("click").play();
+   compruebafin();
+  }  
+  
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function muestrareloj(){
+  
+  window.setInterval(function () {
+    segundos += 1 - paratiempo;
+    if (segundos > 59){
+      minutos ++;
+      segundos = 0;
+    }
+    if (minutos > 59){
+      horas ++;
+      minutos = 0;
+    }
+    if (minutos < 10){
+      rellenomin = "0";
+    }else{
+      rellenomin = "";
+    }
+    if (segundos < 10){
+      rellenosec = "0";
+    }else{
+      rellenosec = "";
+    }
+    if (horas == 0){
+      tiempo.innerHTML = espacio.repeat(10) + rellenomin + minutos + ":" + rellenosec + segundos;
+    }else{
+      tiempo.innerHTML = espacio.repeat(10) + horas + ":" + rellenomin + minutos + ":" + rellenosec + segundos;
+    }    
+  }, 1000); //Muestra cada segundo el tiempo que hace desde que empezamos.
+
+  }
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function compruebafin(){  
+  
+  for (let i=0; i<zonas.length; i++){
+    if (document.getElementById(zonas[i]).innerHTML==""){
+      continue;
+    }
+    if (document.getElementById(zonas[i]).firstChild.src.substring(document.getElementById(zonas[i]).firstChild.src.length - 15) == piezas[i]){
+      completas += 1;
+    }
+  }
+  porcentaje.innerHTML = Math.round(100*completas/24) + " % completado.";
+  mov ++;
+  movimientos.innerHTML = mov + " movimientos.";
+  if (completas == 24 && paratiempo == 0){
+    paratiempo = 1;
+    document.getElementById("conseguido").play();
+    document.getElementById('gif').style.visibility="visible";
+    setTimeout(function(){
+    document.getElementById('gif').style.visibility="hidden";
+    mirarecord();
+    }, 9500);
+  }
+  completas = 0;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function mirarecord(){
+
+  marcador.style.left = "20vw";
+
+  let puntosTiempo = (3600*horas/20) + (60*minutos/20) + (segundos/20);
+  let puntos = mov + puntosTiempo;
+  let puesto1puntos = 100000;
+  let puesto2puntos = 100000;
+  let puesto3puntos = 100000;
+  let puesto1text = "";
+  let puesto2text = "";
+  let puesto3text = "";
+
+  let puesto1horas, puesto2horas, puesto3horas;
+  let puesto1minutos, puesto2minutos, puesto3minutos;
+  let puesto1segundos, puesto2segundos, puesto3segundos;
+  let puesto1mov, puesto2mov, puesto3mov;
+  let puesto1nombre, puesto2nombre, puesto3nombre;
+  let puesto1fecha, puesto2fecha, puesto3fecha;
+
+  let ultimonombre;
+
+  if (localStorage.getItem("puesto1puntos") != null) {
+    ultimonombre = localStorage.getItem("ultimonombre");
+
+    puesto1puntos = localStorage.getItem("puesto1puntos");
+    puesto1horas = localStorage.getItem("puesto1horas");
+    puesto1minutos = localStorage.getItem("puesto1minutos");
+    puesto1segundos = localStorage.getItem("puesto1segundos");
+    puesto1mov = localStorage.getItem("puesto1mov");
+    puesto1nombre = localStorage.getItem("puesto1nombre");
+    puesto1fecha = localStorage.getItem("puesto1fecha");
+  }
+  if (localStorage.getItem("puesto2puntos") != null) {
+    puesto2puntos = localStorage.getItem("puesto2puntos");
+    puesto2horas = localStorage.getItem("puesto2horas");
+    puesto2minutos = localStorage.getItem("puesto2minutos");
+    puesto2segundos = localStorage.getItem("puesto2segundos");
+    puesto2mov = localStorage.getItem("puesto2mov");
+    puesto2nombre = localStorage.getItem("puesto2nombre");
+    puesto2fecha = localStorage.getItem("puesto2fecha");
+  }
+  if (localStorage.getItem("puesto3puntos") != null) {
+    puesto3puntos = localStorage.getItem("puesto3puntos");
+    puesto3horas = localStorage.getItem("puesto3horas");
+    puesto3minutos = localStorage.getItem("puesto3minutos");
+    puesto3segundos = localStorage.getItem("puesto3segundos");
+    puesto3mov = localStorage.getItem("puesto3mov");
+    puesto3nombre = localStorage.getItem("puesto3nombre");
+    puesto3fecha = localStorage.getItem("puesto3fecha");
+  }
+
+  if (puntos < puesto1puntos){
+    let nombre = prompt("¡¡¡Primer puesto!!!\nPon tu nombre.",ultimonombre).slice(0,16);
+    localStorage.setItem("ultimonombre",nombre);
+
+    if (localStorage.getItem("puesto2puntos") != null) {
+      puesto3nombre = puesto2nombre;
+      puesto3puntos = puesto2puntos;
+      puesto3horas = puesto2horas;
+      puesto3minutos = puesto2minutos;
+      puesto3segundos = puesto2segundos;
+      puesto3mov = puesto2mov;
+      puesto3fecha = puesto2fecha;
+      localStorage.setItem("puesto3puntos",puesto3puntos);
+      localStorage.setItem("puesto3horas",puesto3horas);
+      localStorage.setItem("puesto3minutos",puesto3minutos);
+      localStorage.setItem("puesto3segundos",puesto3segundos);
+      localStorage.setItem("puesto3mov",puesto3mov);
+      localStorage.setItem("puesto3nombre",puesto3nombre);
+      localStorage.setItem("puesto3fecha",puesto3fecha);
+    }
+
+    if (localStorage.getItem("puesto1puntos") != null) {
+      puesto2nombre = puesto1nombre;
+      puesto2puntos = puesto1puntos;
+      puesto2horas = puesto1horas;
+      puesto2minutos = puesto1minutos;
+      puesto2segundos = puesto1segundos;
+      puesto2mov = puesto1mov;
+      puesto2fecha = puesto1fecha;
+      localStorage.setItem("puesto2puntos",puesto2puntos);
+      localStorage.setItem("puesto2horas",puesto2horas);
+      localStorage.setItem("puesto2minutos",puesto2minutos);
+      localStorage.setItem("puesto2segundos",puesto2segundos);
+      localStorage.setItem("puesto2mov",puesto2mov);
+      localStorage.setItem("puesto2nombre",puesto2nombre);
+      localStorage.setItem("puesto2fecha",puesto2fecha);
+    }
+
+    puesto1nombre = nombre;
+    puesto1puntos = puntos;
+    puesto1horas = horas;
+    puesto1minutos = rellenomin + minutos;
+    puesto1segundos = rellenosec + segundos;
+    puesto1mov = mov;
+    puesto1fecha = new Date();
+    localStorage.setItem("puesto1puntos",puesto1puntos);
+    localStorage.setItem("puesto1horas",puesto1horas);
+    localStorage.setItem("puesto1minutos",puesto1minutos);
+    localStorage.setItem("puesto1segundos",puesto1segundos);
+    localStorage.setItem("puesto1mov",puesto1mov);
+    localStorage.setItem("puesto1nombre",puesto1nombre);
+    localStorage.setItem("puesto1fecha",puesto1fecha);
+
+  }else if (puntos < puesto2puntos){
+    let nombre = prompt("¡¡¡Segundo puesto!!!\nPon tu nombre.",ultimonombre).slice(0,16);
+    localStorage.setItem("ultimonombre",nombre);
+
+    if (localStorage.getItem("puesto2puntos") != null) {
+      puesto3nombre = puesto2nombre;
+      puesto3puntos = puesto2puntos;
+      puesto3horas = puesto2horas;
+      puesto3minutos = puesto2minutos;
+      puesto3segundos = puesto2segundos;
+      puesto3mov = puesto2mov;
+      puesto3fecha = puesto2fecha;
+      localStorage.setItem("puesto3puntos",puesto3puntos);
+      localStorage.setItem("puesto3horas",puesto3horas);
+      localStorage.setItem("puesto3minutos",puesto3minutos);
+      localStorage.setItem("puesto3segundos",puesto3segundos);
+      localStorage.setItem("puesto3mov",puesto3mov);
+      localStorage.setItem("puesto3nombre",puesto3nombre);
+      localStorage.setItem("puesto3fecha",puesto3fecha);
+    }
+
+    puesto2nombre = nombre;
+    puesto2puntos = puntos;
+    puesto2horas = horas;
+    puesto2minutos = rellenomin + minutos;
+    puesto2segundos = rellenosec + segundos;
+    puesto2mov = mov;
+    puesto2fecha = new Date();
+    localStorage.setItem("puesto2puntos",puesto2puntos);
+    localStorage.setItem("puesto2horas",puesto2horas);
+    localStorage.setItem("puesto2minutos",puesto2minutos);
+    localStorage.setItem("puesto2segundos",puesto2segundos);
+    localStorage.setItem("puesto2mov",puesto2mov);
+    localStorage.setItem("puesto2nombre",puesto2nombre);
+    localStorage.setItem("puesto2fecha",puesto2fecha);
+
+  }else if (puntos < puesto3puntos){
+    let nombre = prompt("¡¡¡Tercer puesto!!!\nPon tu nombre.",ultimonombre).slice(0,16);
+    localStorage.setItem("ultimonombre",nombre);
+
+    puesto3nombre = nombre;
+    puesto3puntos = puntos;
+    puesto3horas = horas;
+    puesto3minutos = rellenomin + minutos;
+    puesto3segundos = rellenosec + segundos;
+    puesto3mov = mov;
+    puesto3fecha = new Date();
+    localStorage.setItem("puesto3puntos",puesto3puntos);
+    localStorage.setItem("puesto3horas",puesto3horas);
+    localStorage.setItem("puesto3minutos",puesto3minutos);
+    localStorage.setItem("puesto3segundos",puesto3segundos);
+    localStorage.setItem("puesto3mov",puesto3mov);
+    localStorage.setItem("puesto3nombre",puesto3nombre);
+    localStorage.setItem("puesto3fecha",puesto3fecha);
+  }
+  
+
+    if (localStorage.getItem("puesto1puntos") != null) {
+      puesto1text = puesto1nombre + espacio.repeat(2) + puesto1mov + " movimientos en " + puesto1horas + ":" + puesto1minutos + ":" + puesto1segundos +
+      espacio.repeat(2) + "Fecha" + espacio + new Date(puesto1fecha).toUTCString();
+    }
+    if (localStorage.getItem("puesto2puntos") != null) {
+      puesto2text = puesto2nombre + espacio.repeat(2) + puesto2mov + " movimientos en " + puesto2horas + ":" + puesto2minutos + ":" + puesto2segundos +
+      espacio.repeat(2) + "Fecha" + espacio + new Date(puesto2fecha).toUTCString();
+    }
+    if (localStorage.getItem("puesto3puntos") != null) {
+      puesto3text = puesto3nombre + espacio.repeat(2) + puesto3mov + " movimientos en " + puesto3horas + ":" + puesto3minutos + ":" + puesto3segundos +
+      espacio.repeat(2) + "Fecha" + espacio + new Date(puesto3fecha).toUTCString();
+    }
+
+
+    document.getElementById("puesto1text").innerHTML = puesto1text;
+    document.getElementById("puesto2text").innerHTML = puesto2text;
+    document.getElementById("puesto3text").innerHTML = puesto3text;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function mezclar(hueco){
+
+  //for (let i=0; i<10000; i++){
+
+  let columna=parseInt(hueco.substring(1,2));
+  let fila=parseInt(hueco.substring(2,3));
+
+  let opciones=["up", "down", "left", "right"];
+
+  if (columna==6 && fila==5){
+      opciones=["up"];
+    }else if (columna==1 && fila==1){
+      opciones=["down","right"];
+    }else if (columna==6 && fila==1){
+      opciones=["down","left"];
+    }else if (columna==1 && fila==4){
+      opciones=["up","right"];
+    }else if (columna==6 && fila==4){
+      opciones=["up","left"];
+    }else if (columna==1){
+      opciones.splice(opciones.indexOf('left'),1);
+    }else if (columna==6){
+      opciones.splice(opciones.indexOf('right'),1);
+    }else if (fila==1){
+      opciones.splice(opciones.indexOf('up'),1);
+    }else if (fila==4){
+      opciones.splice(opciones.indexOf('down'),1);    
+    }
+
+
+  laopcion=opciones[Math.round((opciones.length-1)*Math.random())];
+  
+
+  if (laopcion=="up"){
+    columnaorigen=columna;
+    filaorigen=fila-1;
+  }else if (laopcion=="down"){
+    columnaorigen=columna;
+    filaorigen=fila+1;
+  }else if (laopcion=="left"){
+    columnaorigen=columna-1;
+    filaorigen=fila;
+  }else if (laopcion=="right"){
+    columnaorigen=columna+1;
+    filaorigen=fila;
+  }
+
+  iddeorigen="z"+columnaorigen+filaorigen;
+  
+  
+  let lapieza=document.getElementById(iddeorigen).firstChild;   
+   
+  document.getElementById(hueco).appendChild(lapieza);
+
+  document.getElementById(iddeorigen).innerHTML="";
+
+  //hueco=iddeorigen;
+
+  if (loop<150){
+
+  window.setTimeout(function(){loop++; time*=0.75; mezclar(iddeorigen);}, time);
+}else{
+  mezclaratope(iddeorigen);
+}
+}  //  FIN DE LA FUNCION MEZCLAR.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function mezclaratope(h){
+
+  for (let i=0; i<10000; i++){
+
+  let columna=parseInt(h.substring(1,2));
+  let fila=parseInt(h.substring(2,3));
+
+  let opciones=["up", "down", "left", "right"];
+
+  if (columna==6 && fila==5){
+      opciones=["up"];
+    }else if (columna==1 && fila==1){
+      opciones=["down","right"];
+    }else if (columna==6 && fila==1){
+      opciones=["down","left"];
+    }else if (columna==1 && fila==4){
+      opciones=["up","right"];
+    }else if (columna==6 && fila==4){
+      opciones=["up","left"];
+    }else if (columna==1){
+      opciones.splice(opciones.indexOf('left'),1);
+    }else if (columna==6){
+      opciones.splice(opciones.indexOf('right'),1);
+    }else if (fila==1){
+      opciones.splice(opciones.indexOf('up'),1);
+    }else if (fila==4){
+      opciones.splice(opciones.indexOf('down'),1);    
+    }
+
+
+  laopcion=opciones[Math.round((opciones.length-1)*Math.random())];  
+
+  
+
+  if (laopcion=="up"){
+    columnaorigen=columna;
+    filaorigen=fila-1;
+  }else if (laopcion=="down"){
+    columnaorigen=columna;
+    filaorigen=fila+1;
+  }else if (laopcion=="left"){
+    columnaorigen=columna-1;
+    filaorigen=fila;
+  }else if (laopcion=="right"){
+    columnaorigen=columna+1;
+    filaorigen=fila;
+  }
+
+  iddeorigen="z"+columnaorigen+filaorigen;
+  
+  
+  let lapieza=document.getElementById(iddeorigen).firstChild;
+   
+  document.getElementById(h).appendChild(lapieza);
+
+  document.getElementById(iddeorigen).innerHTML="";
+
+  h=iddeorigen;
+
+  }  //FIN DEL BUCLE FOR.
+}  // FIN DE LA FUNCION MEZCLAR A TOPE.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+window.addEventListener("load",comenzar,false);  //  CARGA PAGINA ANTES DE LLAMAR FUNCION PRINCIPAL.
+
+</script>
+
+</head>
+
+<body>
+
+<!-- los id de las zonas son Z más dos cifras que corresponden a columna y fila respectivamente. 
+     Hay 6 columnas y 4 filas más una 5ª fila para el hueco de abajo-->
+
+  <section class="zonas" id="z11"><img src="imagenes/a1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z21"><img src="imagenes/b1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z31"><img src="imagenes/c1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z41"><img src="imagenes/d1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z51"><img src="imagenes/e1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z61"><img src="imagenes/f1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z12"><img src="imagenes/a2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z22"><img src="imagenes/b2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z32"><img src="imagenes/c2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z42"><img src="imagenes/d2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z52"><img src="imagenes/e2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z62"><img src="imagenes/f2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z13"><img src="imagenes/a3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z23"><img src="imagenes/b3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z33"><img src="imagenes/c3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z43"><img src="imagenes/d3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z53"><img src="imagenes/e3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z63"><img src="imagenes/f3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z14"><img src="imagenes/a4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z24"><img src="imagenes/b4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z34"><img src="imagenes/c4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z44"><img src="imagenes/d4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z54"><img src="imagenes/e4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z64"><img src="imagenes/f4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z65"></section>
+
+  
+  <img src="imagenes/fotocompleta.jpg" id="completa">
+
+
+  <audio src="audios/click.mp3" id="click">Su navegador no soporta este audio</audio>
+  <audio src="audios/record.mp3" id="conseguido">Su navegador no soporta este audio</audio>
+  <audio src="audios/sintonia.mp3" id="sintonia">Su navegador no soporta este audio</audio>
+  <audio src="audios/risaduende.mp3" id="risaduende">Su navegador no soporta este audio</audio>
+
+  <img src="imagenes/gifs/gif001.gif" id="gif"></img>
+    
+  <div id="marcador">
+    <p id="tiempo"></p>
+    <p id="porcentaje"></p>
+    <p id="movimientos"></p>    
+  </div>
+
+  <div id="ranking">
+    <p id="puesto1text"></p>
+    <p id="puesto2text"></p>
+    <p id="puesto3text"></p>    
+  </div>
+
+
+
+  <p id="text"></p>
+
+</body>
+</html>

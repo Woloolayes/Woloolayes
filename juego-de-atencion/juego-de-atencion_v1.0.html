@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Juego-de-atenci&oacute;n</title>
+<style>
+
+body{
+    background: #000000;
+}
+
+img{
+	position: absolute;
+	visibility: visible;
+	height: auto;
+}
+
+table{
+	padding: 0;
+	text-align:left;
+	border:2px #000044;
+	font: 1.2vw auto auto;
+}
+
+td{
+	padding:10px;
+}
+
+input{
+	background: #ffd700;
+	width: 4vw;	
+	font: 1vw auto auto;
+}
+
+#cuadroopciones{	
+	width: 20vw;
+	background: #bbbbbb;
+}
+
+#botonopciones{
+	background-color: #bbbbbb;
+	background-image: url("imagenes/opciones.png");
+	background-repeat:no-repeat;
+	background-size: contain;
+	background-position: left;
+	font:bold 3vw verdana;
+	width: 20vw;
+	height: 15vh;
+}
+
+#botonplay{
+	position: absolute;
+	padding: 0.5vh;
+	border: 0 #000000;
+	background-color: #000000;
+	background-image: url("imagenes/play.jpg");
+	background-repeat:no-repeat;
+	background-size: contain;
+	background-position: center;
+	width: 15vw;
+	height: 15vh;
+}
+
+#imagenpulsar{
+	top: 18vh;
+	left: 60vw;	
+	width: 16vw;
+	transform: rotate(-30deg);
+	visibility: hidden;
+}
+
+p{
+	color: white;
+	font:bold 3vw verdana;
+	text-align: center;	
+}
+
+</style>
+
+<script>
+
+var anchoVentana=window.innerWidth;
+var altoVentana=window.innerHeight;
+
+var intopciones=false;	// PULSACION BOTON DE OPCIONES
+
+var a=0; // FUNCION COMPONENTEALEATORIA PARA MOVIMIENTO 3. QUE DE AL MENOS 10 PASOS ANTES DE CAMBIAR DE DIRECCION
+var b=0; // FUNCION MOVIMIENTO PARA MOVIMIENTO 4. QUE AL MENOS DE X PASOS ANTES DE DESVIAR EN OTRA DIRECCION
+var c=0; // PARA COMPENSAR EN MOVIMIENTO 4 EL MOVIMIENTO EXTRA EN EL REBOTE
+var d=false; // PARA CAMBIAR ENTRE LAS IMAGENES 1 Y 2
+var e=0;	// EN CADA NUEVA ITERACION DE MUESTRA ESTA VARIABLE AUMENTA EN UNO. SE USA PARA IDENTIFICAR LA MULTA Y PODER QUITARLA ANTES DEL PLAZO
+
+var ran=0; // FUNCION MOVIMIENTO PARA MOVIMIENTO 4. CUANDO B=X SE GENERA UN ALEATORIO PARA SENTIDO DESVIO EN SIGUIENTES X PASOS
+
+var int1=false;	// CONTROLA LOS PASOS DE UNO EN UNO AL PULSAR LA PANTALLA
+var jugando=false; // INDICA SI ESTA EN MODO DE JUEGO Y PUNTUACION
+var previo=false; // INDICA SI ESTA EN MODO PREVIO A JUEGO Y PUNTUACION
+var post=false;	 // INDICA SI ESTA EN MODO POSTERIOR A JUEGO
+
+var espera;	// PUEDE SER UN INTERVALO REGULAR O DE DURACION ALEATORIA, SEGUN ESTEMOS EN PREVIO O JUEGO
+var duracion; // SUSTITUYE A DURACIONMUESTRA PARA PREVIO
+var multas=[]; // VECTOR PARA ALMACENAR LAS MULTAS ACTIVAS
+var fallosa=0; // FALLO POR NO PULSAR DESPUES DE UNA MUESTRA
+var fallosb=0; // FALLO POR PULSAR SIN HABER SALIDO MUESTRA
+var aciertos=0;
+
+function comenzar(){
+
+paratamano=document.getElementById("tamano");
+paramovimiento=document.getElementById("movimiento");
+paraamplitud=document.getElementById('amplitud');
+paravelocidad=document.getElementById("velocidad");
+parapaso=document.getElementById("paso");
+paramuestras=document.getElementById("muestras");
+paraduracionmuestra=document.getElementById('duracionmuestra');
+paratrespuesta=document.getElementById("trespuesta");
+
+tamano=parseInt(paratamano.value);
+movimiento=parseInt(paramovimiento.value);
+amplitud=parseInt(paraamplitud.value);
+velocidad=parseFloat(paravelocidad.value);
+paso=parseInt(parapaso.value);
+muestras=parseInt(paramuestras.value);
+duracionmuestra=parseFloat(paraduracionmuestra.value);
+trespuesta=parseFloat(paratrespuesta.value);
+
+sumarax=paso;
+sumaray=paso;
+
+imagen=document.getElementById('imagen');
+imagen.style.width=tamano+"vw";
+
+imagenpulsar=document.getElementById('imagenpulsar');
+
+centrar();
+
+paratamano.addEventListener("change", centrar, false);
+paramovimiento.addEventListener("change", centrar, false);
+
+cuadroopciones=document.getElementById('cuadroopciones');
+botonopciones=document.getElementById('botonopciones');
+botonplay=document.getElementById('botonplay');
+botonopciones.addEventListener("click", function(){intopciones=!intopciones; opciones();}, false);
+botonplay.addEventListener("click", function(){intopciones=!intopciones; opciones(); elprevio();}, false);
+
+sonidoacierto=document.getElementById('sonidoacierto');
+
+document.addEventListener("click", function(event){
+	if (event.target.nodeName!="BUTTON"){
+		int1=true;
+		pulsapantalla();
+	}}, false);
+
+tabla=document.getElementById('tabla');
+tabla.addEventListener("click", renovar, false);
+
+interval=setInterval(function(){return 0;}, 1000);
+
+tpormuestra=60/muestras;
+time=1000*(tpormuestra-duracionmuestra);
+
+siguiente();
+
+renovar();
+}	// FIN DE LA FUNCION COMENZAR
+
+
+
+
+
+function centrar(){
+
+	anchoimagen=imagen.offsetWidth;
+	altoimagen=imagen.offsetHeight;
+
+	x=anchoVentana/2-anchoimagen/2;
+	y=altoVentana/2-altoimagen/2;
+
+	imagen.style.top=y+"px";
+	imagen.style.left=x+"px";
+
+	sumarax=paso;
+	sumaray=paso;
+}
+
+
+function componentealeatoria(){ // PARA EL MOVIMIENTO 3
+
+	if (sumarax!=0 && sumaray!=0){
+		if (Math.random()>0.5){
+			sumarax=0;
+		}else{
+			sumaray=0;
+		}
+	}	
+
+	a++;
+
+	if (a>=10){
+
+		let dado=Math.random();
+
+		if(dado>=0.9){
+			if(sumarax==0){
+				sumaray=0;
+				sumarax=paso;
+			}else{
+				sumarax==0;
+				sumaray=paso;
+			}
+		}else if(dado>=0.8 && dado<0.9){
+			if(sumarax==0){
+				sumaray=0;
+				sumarax=-paso;
+			}else{
+				sumarax==0;
+				sumaray=-paso;
+			}
+		}
+		a=0;
+	}	
+}
+
+
+function mover(){
+
+	if (previo){
+		centrar();
+		return 0;
+	}
+
+	if (movimiento==1){
+		sumaray=0;
+	}
+
+	if (movimiento==3){
+		componentealeatoria();
+	}
+
+	if (movimiento==4){
+
+		c=Math.max(paso/2,1);
+		b++;
+
+		if (b>=20){
+			ran=Math.random();
+			b=0;		
+		}
+		
+		if (ran>=0.75){
+			x+=c;
+		}
+		if(ran<=0.25){
+			y+=c;
+		}
+		if(ran>0.25 && ran<=0.5){
+			x-=c;
+		}
+		if(ran>0.5 && ran<0.75){
+			y-=c;
+		}
+	}
+
+	if (movimiento!=4){
+		c=0;
+	}
+
+	if (x<=0+(100-amplitud)*anchoVentana/100){
+		sumarax*=-1;
+		x=0+(100-amplitud)*anchoVentana/100;
+	}
+
+	if (y<=0+(100-amplitud)*altoVentana/100){
+		sumaray*=-1;
+		y=0+(100-amplitud)*altoVentana/100;
+	}
+
+	if (x>=anchoVentana-imagen.offsetWidth-paso/1.1-c-(100-amplitud)*anchoVentana/100){
+		sumarax=-sumarax;
+		x=anchoVentana-imagen.offsetWidth-paso/1.1-c-(100-amplitud)*anchoVentana/100;      
+	}
+
+	if (y>=altoVentana-imagen.offsetHeight-paso/1.1-c-(100-amplitud)*altoVentana/100){
+		sumaray=-sumaray;
+		y=altoVentana-imagen.offsetHeight-paso/1.1-c-(100-amplitud)*altoVentana/100;
+	}
+	
+	x+=sumarax;
+	y+=sumaray;	
+
+	imagen.style.top=y+"px";
+	imagen.style.left=x+"px";
+}
+
+
+function opciones(){
+
+	if (!intopciones){
+		if(post){location.reload();}
+		cuadroopciones.style.visibility="hidden";
+		botonopciones.style.background="#000000";
+		botonopciones.style.border="none";
+		imagen.style.zIndex="0";
+		botonplay.style.visibility="hidden";
+	}else{
+		if(jugando){elpost();}
+		cuadroopciones.style.visibility="visible";
+		botonopciones.style.background="#bbbbbb";
+		botonopciones.style.backgroundImage = "url('imagenes/opciones.png')";
+		botonopciones.style.backgroundRepeat="no-repeat";
+		botonopciones.style.backgroundSize="contain";
+		botonopciones.style.backgroundPosition="left";
+		if(!previo && !jugando && !post){botonplay.style.visibility="visible";}		
+		imagen.style.zIndex="-1";
+	}
+
+		//document.getElementById('texto1').innerHTML="time = "+time;
+		//document.getElementById('texto2').innerHTML="fallos a = "+fallosa;
+		//document.getElementById('texto3').innerHTML="fallos b = "+fallosb;
+		//document.getElementById('texto4').innerHTML="aciertos = "+aciertos;
+		//document.getElementById('texto5').innerHTML="multas = "+multas;
+	mover();
+		
+}
+
+
+function renovar(){
+
+	clearInterval(interval);
+
+	tamano=parseInt(paratamano.value);
+	movimiento=parseInt(paramovimiento.value);
+	amplitud=parseInt(paraamplitud.value);
+	velocidad=parseInt(paravelocidad.value);
+	paso=parseInt(parapaso.value);
+	muestras=parseInt(paramuestras.value);
+	duracionmuestra=parseFloat(paraduracionmuestra.value);
+	trespuesta=parseFloat(paratrespuesta.value);	
+	tpormuestra=60/muestras;
+	tiempo=1000/velocidad;
+	sumarax=Math.sign(sumarax)*paso;
+	sumaray=Math.sign(sumaray)*paso;
+	imagen.style.width=tamano+"vw";		
+
+	interval=setInterval(opciones, tiempo);	
+
+	clearTimeout(timermuestra);
+	siguiente();
+	}
+
+
+
+function siguiente() {
+		
+		if (previo){
+			espera=0;
+			duracion=1;
+		}else{
+			espera=Math.random()*(2*tpormuestra-3*duracionmuestra);
+			duracion=duracionmuestra;
+		}
+
+		if(!d){
+			imagenpulsar.style.visibility="hidden";
+			imagen.src="imagenes/1.jpg";
+			time=1000*(duracion + espera);
+		}else{
+			if(previo){
+			imagenpulsar.style.visibility="visible";
+			sonidoacierto.currentTime=0;
+			sonidoacierto.play();
+		}
+			imagen.src="imagenes/2.jpg";
+
+			if(jugando){
+				e++;
+				const ebis=e;
+				multas.push(ebis);
+				setTimeout(function(){
+					if(multas[0]==ebis){falloa();}
+				}, trespuesta*1000);
+			}			
+
+			time=1000*duracion;
+		}
+  		//document.getElementById('texto3').innerHTML="multas = "+multas;
+  		d=!d;
+
+ 	 timermuestra = setTimeout(siguiente, time);
+ 	}
+
+function falloa(){
+	//document.getElementById('texto4').innerHTML="falloa";
+	fallosa++;
+	multas.splice(0,1);
+}
+
+function pulsapantalla(){	
+
+	if(int1 && previo){
+	
+		int1=false;
+		eljuego();
+	}
+		
+	if(int1 && jugando){
+	
+		int1=false;
+		puntuar();
+	}		
+}
+
+
+function elprevio(){
+
+	previo=true;
+	jugando=false;
+	post=false;
+		
+	botonplay.style.visibility="hidden";
+
+	clearTimeout(timermuestra);
+	d=false;
+	siguiente();
+// (repartir por otras funciones) dejar la imagen parada en el centro cambiando regularmente a muestra y con flechitas y sonido bueno cuando sale muestra
+// esperar pulsacion de tecla o pantalla para iniciar juego
+}
+
+
+function eljuego(){
+
+	previo=false;
+	jugando=true;
+	post=false;
+
+	//document.getElementById('texto1').innerHTML="jugando";
+
+	clearTimeout(timermuestra);
+	d=false;
+	siguiente();
+}
+
+
+function elpost(){
+
+	previo=false;
+	jugando=false;
+	post=true;
+
+	clearTimeout(timermuestra);
+	clearInterval(interval);
+
+	eliminar("tabla");
+	eliminar("imagen");
+	eliminar("imagenpulsar");
+
+	var p1 = document.createElement("P");
+  	p1.innerHTML="Total de muestras = "+e;
+  	document.body.appendChild(p1);
+
+  	var p2 = document.createElement("P");
+  	p2.innerHTML="aciertos = "+aciertos;
+  	document.body.appendChild(p2);
+
+  	var p3 = document.createElement("P");
+  	p3.innerHTML="No ha pulsado a tiempo = "+fallosa;
+  	document.body.appendChild(p3);
+
+  	var p4 = document.createElement("P");
+  	p4.innerHTML="Pulsacion innecesaria = "+(fallosb-fallosa);
+  	document.body.appendChild(p4);  	
+
+	//document.getElementById('texto1').innerHTML="post";
+// borra toda la pantalla y muestra los resultados generales. ofrece un boton para ver un informe detallado
+// ofrece un boton para volver al inicio
+}
+
+
+
+function puntuar(){
+	//document.getElementById('texto1').innerHTML+="puntua";
+	// si no hay multa pendiente, contabilizar fallo tipo B
+	// si hay multas pendientes, desactivar la mas antigua y contabilizar acierto
+
+	if(multas.length==0){
+		fallosb++;
+		multas.splice(0,1);
+	}else{
+		sonidoacierto.currentTime=0;
+		sonidoacierto.play();
+		aciertos++;
+		multas.splice(0,1);
+	}
+	}
+
+function eliminar(id){
+  imagen = document.getElementById(id); 
+  padre = imagen.parentNode;
+  padre.removeChild(imagen);  
+}
+
+/*
+document.getElementById('texto1').innerHTML="anchoventana = "+anchoVentana;
+document.getElementById('texto2').innerHTML="altoventana = "+altoVentana;
+document.getElementById('texto3').innerHTML="altoimagen = "+altoimagen;
+document.getElementById('texto4').innerHTML="anchoimagen = "+anchoimagen;
+*/
+
+window.addEventListener("load",comenzar,false);
+
+</script>
+
+</head>
+
+<button id="botonopciones"></button>
+
+<div id="cuadroopciones">
+<table id="tabla">
+
+<tr><td>
+Tama&ntilde;o:</td><td><input type="number" id="tamano" min="1" max="30" value="15" step="1"></input></td></tr>
+<tr><td>
+Movimiento:</td><td><input type="number" id="movimiento" min="1" max="4" value="1" step="1"></input></td></tr>
+<tr><td>
+Amplitud %:</td><td><input type="number" id="amplitud" min="50" max="100" value="100" step="1"></input></td></tr>
+<tr><td>
+Velocidad:</td><td><input type="number" id="velocidad" min="5" max="65" value="40" step="5"></input></td></tr>
+<tr><td>
+Paso:</td><td><input type="number" id="paso" min="1" max="10" value="2" step="1"></input></td></tr>
+<tr><td>
+Muestras/minuto:</td><td><input type="number" id="muestras" min="1" max="20" value="12" step="1"></input></td></tr>
+<tr><td>
+Duraci&oacute;n muestra:</td><td><input type="number" id="duracionmuestra" min="0.1" max="5" value="1" step="0.1"></input></td></tr>
+<tr><td>
+T. Respuesta:</td><td><input type="number" id="trespuesta" min="0.5" max="5" value="1" step="0.5"></input></td></tr>
+
+</table>
+</div>
+
+<button id="botonplay"></button>
+
+
+<img src="imagenes/1.jpg" id="imagen">
+
+<img src="imagenes/imagenpulsar.png" id="imagenpulsar">
+
+<audio src="audios/acierto.mp3" id="sonidoacierto"></audio>
+
+</body>
+</html>

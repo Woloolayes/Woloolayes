@@ -1,0 +1,11 @@
+puedes crear tantas Grids como quieras. 
+Guarda la carperta original y haz tantas copias de ella como necesites.
+En cada copia puedes poner las imágenes y audios que quieras. 
+Para ello sustituye las imágenes de los números por las tuyas
+y les pones de nombre el número de la casilla donde quieres que aparezca.
+
+Los audios igual, y les pones de nombre el número de la imagen 
+que les corresponda.
+
+Que lo disfrutes, y cualquier error, problema o nueva idea
+que necesites, dímelo.

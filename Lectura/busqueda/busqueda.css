@@ -1,0 +1,23 @@
+body{
+	background: linear-gradient(135deg, #ffd700, #ffb000);
+}
+
+table{
+  position: absolute;
+  top: 7.2vh;
+  right: 10vw;
+  width: 80vw;
+  height: 80vh;
+}
+
+.celdas{
+  /*position: absolute;*/
+  width: 8vw;
+  height: 8vh;
+  text-align: center;
+  font:bold 3vw arial;
+  }
+
+.celdas:hover{  
+  background-color: #66a6ff;
+  }

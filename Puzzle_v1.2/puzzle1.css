@@ -1,0 +1,240 @@
+body{
+	background: linear-gradient(135deg, #ffd700, #ffb000);
+}
+
+.zonas{
+  position: absolute;
+  width: 13.33vw;
+  height: 13.33vh;
+  border: 1px solid #ffb000;
+  background-color: #000000;
+  color: #ffffff;
+  }
+
+.imagenes{
+  position: absolute;
+  width: 13.33vw;
+  height: 13.33vh;
+  /*object-fit: fill;*/
+  z-index: 1;
+}
+
+  #completa{
+  position: absolute;
+  top: 2vh;
+  left: 2vw;
+  width: 17vw;
+  height: 17vh;
+  z-index: -1;
+}
+
+#z11{
+  position: absolute;
+  top: 28vh;
+  left: 10vw;
+   background-size: cover;
+  background-position: center;
+  }
+
+#z21{
+  position: absolute;
+  top: 28vh;
+  left: 23.33vw;
+  
+  }
+
+#z31{
+  position: absolute;
+  top: 28vh;
+  left: 36.67vw;
+  }
+
+#z41{
+  position: absolute;
+  top: 28vh;
+  left: 50vw;
+  }
+
+#z51{
+  position: absolute;
+  top: 28vh;
+  left: 63.33vw;
+  }
+
+#z61{
+  position: absolute;
+  top: 28vh;
+  left: 76.67vw;
+  }
+
+#z12{
+  position: absolute;
+  top: 41.33vh;
+  left: 10vw;
+  }
+
+#z22{
+  position: absolute;
+  top: 41.33vh;
+  left: 23.33vw;
+  }
+
+#z32{
+  position: absolute;
+  top: 41.33vh;
+  left: 36.67vw;
+  }
+
+#z42{
+  position: absolute;
+  top: 41.33vh;
+  left: 50vw;
+  }
+
+#z52{
+  position: absolute;
+  top: 41.33vh;
+  left: 63.33vw;
+  }
+
+#z62{
+  position: absolute;
+  top: 41.33vh;
+  left: 76.67vw;
+  }
+
+#z13{
+  position: absolute;
+  top: 54.67vh;
+  left: 10vw;
+  }
+
+#z23{
+  position: absolute;
+  top: 54.67vh;
+  left: 23.33vw;
+  }
+
+#z33{
+  position: absolute;
+  top: 54.67vh;
+  left: 36.67vw;
+  }
+
+#z43{
+  position: absolute;
+  top: 54.67vh;
+  left: 50vw;
+  }
+
+#z53{
+  position: absolute;
+  top: 54.67vh;
+  left: 63.33vw;
+  }
+
+#z63{
+  position: absolute;
+  top: 54.67vh;
+  left: 76.67vw;
+  }
+
+#z14{
+  position: absolute;
+  top: 68vh;
+  left: 10vw;
+  }
+
+#z24{
+  position: absolute;
+  top: 68vh;
+  left: 23.33vw;
+  }
+
+#z34{
+  position: absolute;
+  top: 68vh;
+  left: 36.67vw;
+  }
+
+#z44{
+  position: absolute;
+  top: 68vh;
+  left: 50vw;
+  }
+
+#z54{
+  position: absolute;
+  top: 68vh;
+  left: 63.33vw;
+  }
+
+#z64{
+  position: absolute;
+  top: 68vh;
+  left: 76.67vw;
+  }
+
+#z65{
+  position: absolute;
+  top: 81.33vh;
+  left: 76.67vw;
+  }
+  
+
+/*#botonmezclar{
+  position: absolute;
+  top: 6vh;
+  left: 45vw;
+  width: 10vw;
+  height: 6vh;
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+  border-radius: 20%;
+  border: 0.03vw solid #000000;
+  box-shadow: #999 0.42vw 0.47vw 0.26vw;
+  font:bold 2.3vw arial;
+}
+
+#botonmezclar:hover{
+  background: linear-gradient(135deg, #ffd700, #ffb000);
+  box-shadow: #ddd 0.42vw 0.47vw 0.26vw;
+}*/
+
+#text{
+  position: absolute;
+  top: 10vh;
+  left: 30vw;
+  color: #4484dd;
+  font:bold 2.3vw arial;
+}
+
+#gif{
+  position: absolute;  
+  top: 0vh;
+  left: 0vw;
+  width: 100vw;
+  height: 100vh; 
+  visibility: hidden; 
+  z-index: 0;
+}
+
+#marcador{
+  position: absolute;
+  top: 1vh;
+  left: 40vw;
+  color: #4484dd;
+  font:bold 2.3vw arial;
+  z-index: -1;
+  line-height: 1vh;
+}
+
+#ranking{
+  position: absolute;
+  top: 1vh;
+  left: 42vw;
+  color: #4484dd;
+  font:bold 1.3vw arial;
+  z-index: -1;
+  line-height: 1vh;
+}
+

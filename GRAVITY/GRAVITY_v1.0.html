@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+<style>
+
+#canvas{
+	
+	position: absolute;	
+	top: 230px;
+	left: 480px;
+	border:1px solid #FF0000;
+	/*background-color: #000000;*/
+	}
+
+
+
+
+
+</style>
+
+<script>
+
+var i=0;
+var j=0;
+
+var posicionesx=[
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50),
+Math.round(860*Math.random()+50)];
+
+var posicionesy=[
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50),
+Math.round(440*Math.random()+50)];
+
+var velocidadesx=[
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10)];
+
+var velocidadesy=[
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10),
+Math.round(20*Math.random()-10)];
+
+var radios=[
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10),
+Math.round(40*Math.random()+10)];
+
+
+function comenzar(){
+	canvas = document.getElementById('canvas');
+	c = canvas.getContext('2d');
+
+
+	setInterval(animacion,33);
+
+}
+
+
+
+function animacion(){
+
+	
+
+	c.clearRect(0,0,960,540);
+
+	dibujacirculo(c,posicionesx[0],posicionesy[0],radios[0]);
+	dibujacirculo(c,posicionesx[1],posicionesy[1],radios[1]);
+	dibujacirculo(c,posicionesx[2],posicionesy[2],radios[2]);
+	dibujacirculo(c,posicionesx[3],posicionesy[3],radios[3]);
+	dibujacirculo(c,posicionesx[4],posicionesy[4],radios[4]);
+
+	for (i=0; i<5; i++){
+
+		posicionesx[i]+=velocidadesx[i];
+
+		if (posicionesx[i]<=0+radios[i] || posicionesx[i]>=960-radios[i]){
+			velocidadesx[i]*=-1;
+		}	
+	}
+
+
+	for (j=0; j<5; j++){
+
+		posicionesy[j]+=velocidadesy[j];			
+
+		if (posicionesy[j]<=0+radios[j] || posicionesy[j]>=540-radios[j]){
+			velocidadesy[j]*=-1;
+		}
+	}
+}
+
+
+function dibujacirculo(c,x,y,radio){
+	c.beginPath();
+	c.arc(x, y, radio, 0, 2 * Math.PI);
+	c.closePath();
+	c.stroke();
+}
+
+
+
+window.addEventListener("load",comenzar,false);
+
+</script>
+
+</head>
+
+<body>
+
+
+
+<canvas id="canvas" width="960" height="540">
+Su navegador no soporta el elemento canvas
+<canvas>
+
+<p id="texto">Hola</p>
+
+
+</body>
+</html>

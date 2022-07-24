@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title></title>
+
+
+<style>
+
+body{
+	background: linear-gradient(135deg, #ffd700, #ffb000);
+}
+
+#zona1{
+  position: absolute;
+  width: 33.33vw;
+  height: 50vh;
+  top: 0vh;
+  left: 0vw;
+  /*background-image: url("imagenes/a.jpg");*/
+  background-size: cover;
+  background-position: center;
+  }
+
+  #zona2{
+  position: absolute;
+  width: 33.33vw;
+  height: 50vh;
+  top: 0vh;
+  left: 33.33vw;
+  /*background-image: url("imagenes/b.jpg");*/
+  background-size: cover;
+  background-position: center;
+  }
+
+  #zona3{
+  position: absolute;
+  width: 33.33vw;
+  height: 50vh;
+  top: 0vh;
+  left: 66.66vw;
+  /*background-image: url("imagenes/c.jpg");*/
+  background-size: cover;
+  background-position: center;
+  }
+
+  #imag1{
+   position: absolute;
+  /*width: 17vw;
+  height: 25vh;
+  top: 62.5vh;
+  left: 39.58vw;*/
+  }
+
+  #imag2{
+  position: absolute;
+  /*width: 17vw;
+  height: 25vh;
+  top: 62.5vh;
+  right: 6.25vw;*/
+  }
+
+  #imag3{
+  position: absolute;
+  /*width: 17vw;
+  height: 25vh;
+  top: 62.5vh;
+  left: 6.25vw;*/
+  }
+
+  
+</style>
+
+  
+
+
+<script>
+
+  var zona1;
+  var zona2;
+  var zona3;
+
+  var animal;
+
+  var veranimal1=1;
+  var veranimal2=1;
+  var veranimal3=1;
+
+
+function comenzar(){
+
+  
+
+
+  zona1=document.getElementById('zona1');
+
+  zona1.style.backgroundImage='url("imagenes/a.jpg")';
+
+  zona1.addEventListener("dragenter",function(e){e.preventDefault();},false);
+
+  zona1.addEventListener("dragleave",function(e){e.preventDefault();},false);
+
+  zona1.addEventListener("dragover",function(e){e.preventDefault();},false);
+
+  zona1.addEventListener("drop",soltado1,false);
+
+
+
+
+  zona2=document.getElementById('zona2');
+
+  zona2.style.backgroundImage='url("imagenes/b.jpg")';
+
+  zona2.addEventListener("dragenter",function(e){e.preventDefault();},false);
+
+  zona2.addEventListener("dragleave",function(e){e.preventDefault();},false);
+
+  zona2.addEventListener("dragover",function(e){e.preventDefault();},false);
+
+  zona2.addEventListener("drop",soltado2,false);
+
+
+
+  zona3=document.getElementById('zona3');
+
+  zona3.style.backgroundImage='url("imagenes/c.jpg")';
+
+  zona3.addEventListener("dragenter",function(e){e.preventDefault();},false);
+
+  zona3.addEventListener("dragleave",function(e){e.preventDefault();},false);
+
+  zona3.addEventListener("dragover",function(e){e.preventDefault();},false);
+
+  zona3.addEventListener("drop",soltado3,false);
+
+
+
+  imag1=document.getElementById('imag1');
+
+  
+  	/*imag1.style.top="10.9vh";
+  	imag1.style.left="1vw";
+  	imag1.style.width="8.5vw";
+  	imag1.style.height="12.5vh";*/
+
+  if (veranimal1==0){
+  	imag1.style.top="13vh";
+  	imag1.style.left="1vw";
+  	imag1.style.width="8.5vw";
+  	imag1.style.height="12.5vh";
+  } else{
+  	imag1.style.top="62.5vh";
+  	imag1.style.left="39.58vw";
+  	imag1.style.width="17vw";
+  	imag1.style.height="25vh";
+  }
+
+  imag1.addEventListener("dragstart",function(){animal=1;},false);
+
+
+  imag2=document.getElementById('imag2');
+
+   /* imag2.style.top="11.3vh";
+  	imag2.style.left="50vw";
+  	imag2.style.width="8vw";
+  	imag2.style.height="12.5vh";*/
+
+  if (veranimal2==0){
+  	imag2.style.top="11.5vh";
+  	imag2.style.left="50.5vw";
+  	imag2.style.width="8vw";
+  	imag2.style.height="12.5vh";
+  } else{
+  	imag2.style.top="62.5vh";
+  	imag2.style.right="9.17vw";
+  	imag2.style.width="15vw";
+  	imag2.style.height="25vh";
+  }
+
+
+
+  imag2.addEventListener("dragstart",function(){animal=2;},false);
+
+
+
+  imag3=document.getElementById('imag3');
+
+  	/*imag3.style.top="12.9vh";
+  	imag3.style.right="18.4vw";
+  	imag3.style.width="3.5vw";
+  	imag3.style.height="7vh";*/
+
+
+  if (veranimal3==0){
+  	imag3.style.top="13vh";
+  	imag3.style.left="77vw";
+  	imag3.style.width="3.5vw";
+  	imag3.style.height="7vh";
+  } else{
+  	imag3.style.top="62.5vh";
+  	imag3.style.left="8.5vw";
+  	imag3.style.width="12.5vw";
+  	imag3.style.height="25vh";
+
+
+  }
+
+
+  imag3.addEventListener("dragstart",function(){animal=3;},false);
+
+  if (veranimal1==0 && veranimal2==0 && veranimal3==0){
+  	setTimeout(function(){document.getElementById('muybien').play();}, 3000);
+  }
+
+}
+
+
+
+
+
+
+
+function soltado1(e){
+
+  e.preventDefault();
+
+  if(animal==1){ 
+
+	veranimal1=0;
+
+  	document.getElementById('camello').play();
+
+  	zona1.style.backgroundImage='url("imagenes/gifs/gif001.gif")';
+
+  	setTimeout(comenzar, 3000);
+
+  }else{
+  	comenzar();
+  }  	
+}
+
+
+function soltado2(e){
+
+  e.preventDefault();
+
+  if(animal==2){  
+
+	veranimal2=0;
+
+	document.getElementById('mono').play();
+
+  	zona2.style.backgroundImage='url("imagenes/gifs/gif002.gif")';
+
+  	setTimeout(comenzar, 3000);
+
+  }else{
+  	comenzar();
+  }
+}
+
+
+function soltado3(e){
+
+  e.preventDefault();
+
+  if(animal==3){  
+
+	veranimal3=0;
+
+	document.getElementById('pinguino').play();
+
+  	zona3.style.backgroundImage='url("imagenes/gifs/gif003.gif")';
+
+  	setTimeout(comenzar, 3000);
+
+  }else{
+  	comenzar();
+  }
+}
+
+
+
+window.addEventListener("load",comenzar,false);
+</script>
+
+
+
+
+
+</head>
+
+
+
+
+
+<body>
+
+  <section class="zonas" id="zona1">
+  </section>
+
+	<section class="zonas" id="zona2">
+  </section>
+
+  <section class="zonas" id="zona3">
+  </section>
+
+
+  <img src="imagenes/1.png" id="imag1"></img>
+  <img src="imagenes/2.png" id="imag2"></img>
+  <img src="imagenes/3.png" id="imag3"></img>
+
+
+  <audio src="audios/mono.mp3" id="mono">Su navegador no soporta este audio</audio>
+  <audio src="audios/pinguino.mp3" id="pinguino">Su navegador no soporta este audio</audio>
+  <audio src="audios/camello.mp3" id="camello">Su navegador no soporta este audio</audio>
+  <audio src="audios/muybien.mp3" id="muybien">Su navegador no soporta este audio</audio>
+    
+    
+
+  </section>	
+
+</body>
+</html>

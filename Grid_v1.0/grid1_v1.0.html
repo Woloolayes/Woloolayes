@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Grid Nº1</title>
+<link rel="stylesheet" href="grid1.css"/>
+
+<script>
+
+//DECLARACIÓN VARIABLES GLOBALES.
+
+  var zonas=[
+  "z11", "z21", "z31", "z41",
+  "z12", "z22", "z32", "z42",
+  "z13", "z23", "z33", "z43",     //  VECTOR CON LAS ID DE LAS 16 ZONAS.
+  "z14", "z24", "z34", "z44"
+  ];
+
+  var piezas=[
+  "imagenes/1.jpg", "imagenes/2.jpg", "imagenes/3.jpg", "imagenes/4.jpg",
+  "imagenes/5.jpg", "imagenes/6.jpg", "imagenes/7.jpg", "imagenes/8.jpg",
+  "imagenes/9.jpg", "imagenes/10.jpg", "imagenes/11.jpg", "imagenes/12.jpg",     //  VECTOR CON LAS URL DE LAS 16 IMÁGENES.
+  "imagenes/13.jpg", "imagenes/14.jpg", "imagenes/15.jpg", "imagenes/16.jpg"];
+
+
+  var audios=[
+  "1", "2", "3", "4",
+  "5", "6", "7", "8",
+  "9", "10", "11", "12",     //  VECTOR CON LAS IP DE LOS AUDIOS.
+  "13", "14", "15", "16"];  
+
+    
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function comenzar(){
+
+for (let i=0; i<zonas.length; i++){  
+  document.getElementById(zonas[i]).addEventListener("click", function(){document.getElementById(audios[i]).play();}, false);  
+  }
+}// FIN COMENZAR.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+window.addEventListener("load",comenzar,false);  //  CARGA PAGINA ANTES DE LLAMAR FUNCION PRINCIPAL.
+
+</script>
+
+</head>
+
+<body>
+
+
+  <section class="zonas" id="z11"><img src="imagenes/1.jpg" class="imagenes"></section>
+  <section class="zonas" id="z21"><img src="imagenes/2.jpg" class="imagenes"></section>
+  <section class="zonas" id="z31"><img src="imagenes/3.jpg" class="imagenes"></section>
+  <section class="zonas" id="z41"><img src="imagenes/4.jpg" class="imagenes"></section>
+  <section class="zonas" id="z12"><img src="imagenes/5.jpg" class="imagenes"></section>
+  <section class="zonas" id="z22"><img src="imagenes/6.jpg" class="imagenes"></section>
+  <section class="zonas" id="z32"><img src="imagenes/7.jpg" class="imagenes"></section>
+  <section class="zonas" id="z42"><img src="imagenes/8.jpg" class="imagenes"></section>
+  <section class="zonas" id="z13"><img src="imagenes/9.jpg" class="imagenes"></section>
+  <section class="zonas" id="z23"><img src="imagenes/10.jpg" class="imagenes"></section>
+  <section class="zonas" id="z33"><img src="imagenes/11.jpg" class="imagenes"></section>
+  <section class="zonas" id="z43"><img src="imagenes/12.jpg" class="imagenes"></section>
+  <section class="zonas" id="z14"><img src="imagenes/13.jpg" class="imagenes"></section>
+  <section class="zonas" id="z24"><img src="imagenes/14.jpg" class="imagenes"></section>
+  <section class="zonas" id="z34"><img src="imagenes/15.jpg" class="imagenes"></section>
+  <section class="zonas" id="z44"><img src="imagenes/16.jpg" class="imagenes"></section>
+
+  
+
+
+
+  <audio src="audios/1.mp3" id="1">Su navegador no soporta este audio</audio>
+  <audio src="audios/2.mp3" id="2">Su navegador no soporta este audio</audio>
+  <audio src="audios/3.mp3" id="3">Su navegador no soporta este audio</audio>
+  <audio src="audios/4.mp3" id="4">Su navegador no soporta este audio</audio>
+  <audio src="audios/5.mp3" id="5">Su navegador no soporta este audio</audio>
+  <audio src="audios/6.mp3" id="6">Su navegador no soporta este audio</audio>
+  <audio src="audios/7.mp3" id="7">Su navegador no soporta este audio</audio>
+  <audio src="audios/8.mp3" id="8">Su navegador no soporta este audio</audio>
+  <audio src="audios/9.mp3" id="9">Su navegador no soporta este audio</audio>
+  <audio src="audios/10.mp3" id="10">Su navegador no soporta este audio</audio>
+  <audio src="audios/11.mp3" id="11">Su navegador no soporta este audio</audio>
+  <audio src="audios/12.mp3" id="12">Su navegador no soporta este audio</audio>
+  <audio src="audios/13.mp3" id="13">Su navegador no soporta este audio</audio>
+  <audio src="audios/14.mp3" id="14">Su navegador no soporta este audio</audio>
+  <audio src="audios/15.mp3" id="15">Su navegador no soporta este audio</audio>
+  <audio src="audios/16.mp3" id="16">Su navegador no soporta este audio</audio>
+    
+
+
+
+  <p id="text"></p>
+
+</body>
+</html>

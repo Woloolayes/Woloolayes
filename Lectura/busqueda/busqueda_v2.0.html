@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>busqueda</title>
+
+<style>
+  body{
+  background: linear-gradient(135deg, #ffd700, #ffb000);
+  background-image: url("../fondopapel.jpg");
+  background-repeat:no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+table{
+  position: absolute;
+  top: 7.2vh;
+  right: 10vw;
+  width: 80vw;
+  height: 80vh;
+}
+
+.celdas{
+  /*position: absolute;*/
+  width: 8vw;
+  height: 8vh;
+  text-align: center;
+  font:bold 3vw arial;
+  }
+
+.celdas:hover{  
+  background-color: #66a6ff;
+  }
+</style>
+
+<script>
+
+//DECLARACIÓN VARIABLES GLOBALES.
+  var orden;
+
+  var sigpieza = 1;
+
+  var rango=3;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function comenzar(){
+// CREA UN ORDEN ALEATORIO PARA LOS 100 NUMEROS
+orden = randomize();
+
+// CREA UNA TABLA DE nXn CASILLEROS Y PONLES LOS NUMEROS EN EL ORDEN CREADO
+////////////////////////////BASADO EN CASO GENERAL COPIADO DE UNA WEB///////////////////////////////////////////////////
+// Obtenemos la referencia del elemento body
+var body = document.getElementsByTagName("body")[0];
+// Creamos un elemento <table> y un elemento <tbody>
+var tabla = document.createElement("table");
+
+
+
+var tblBody = document.createElement("tbody");
+// Creamos las celdas
+for (var i = 0; i < rango; i++) {
+  // Creamos las hileras de la tabla
+  var fila = document.createElement("tr");
+  for (var j = 0; j < rango; j++) {
+    // Crea un elemento <td> y un nodo de texto, hace que el nodo de
+    // texto sea el contenido de <td>, ubica el elemento <td> al final
+    // de la hilera de la tabla
+    var celda = document.createElement("td");
+    // CREO VARIABLE NUMERICA PARA VALOR CELDA
+    let poner=orden[rango*i+j];
+    // AÑADO ATRIBUTOS CLASE E ID PARA USAR CSS Y TAMBIEN RECONOCER LA CASILLA PULSADA
+    celda.setAttribute("class","celdas");
+    celda.setAttribute("id",poner);
+    //
+    var textoCelda = document.createTextNode(poner);
+    celda.appendChild(textoCelda);
+    fila.appendChild(celda);
+  }
+// agregamos la hilera al final de la tabla (al final del elemento tblbody)
+tblBody.appendChild(fila);
+}
+// posicionamos el <tbody> debajo del elemento <table>
+tabla.appendChild(tblBody);
+// appends <table> into <body>
+body.appendChild(tabla);
+////////////////////////////FIN CREAR TABLA, BASADO EN CASO GENERAL COPIADO DE UNA WEB//////////////////////////
+
+// ESPERA UN CLICK Y COMPRUEBA SI SE HA HECHO SOBRE LA IMAGEN CORRECTA
+tabla.setAttribute("id", "latabla");
+latabla=document.getElementById('latabla');
+latabla.addEventListener("click", evaluar, false);
+
+// SI SE CAMBIA EL RANGO, SE VUELVE A COMENZAR CON UNA MATRIZ DE TAMAÑO RANGO X RANGO
+cambiarango=document.getElementById('rango');
+cambiarango.addEventListener("change", function(){eliminar("latabla"); rango=parseInt(cambiarango.value); sigpieza=1; comenzar();});
+
+}// FIN COMENZAR.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function evaluar(event){
+  let acierto = document.getElementById('acierto');
+  let fallo = document.getElementById('fallo');
+  let terminado = document.getElementById('terminado');
+  let numero=parseInt(event.target.id);
+  if (numero==sigpieza){
+    // REPRODUCIR AUDIO ACIERTO O TERMINADO
+    if (numero==rango*rango){
+      terminado.currentTime=0;
+      terminado.play();
+    }else{
+      acierto.currentTime=0;
+      acierto.play();
+      // PASAR A SIGUIENTE PIEZA
+      sigpieza++;}
+    
+  }else{
+    fallo.currentTime=0;
+    fallo.play();
+  }
+}
+
+
+function randomize(){
+
+let elorden = new Array(rango*rango);
+let guarismos = new Array(rango*rango);
+let index;
+  for (let c=1; c<=rango*rango; c++){
+    guarismos[c-1]=c;
+  }
+
+for (let j = 0; j < rango*rango; j++) {
+  
+elorden[j]=guarismos[Math.round((guarismos.length-1)*Math.random())];
+
+index = guarismos.indexOf(elorden[j]);
+
+guarismos.splice(index,1);
+
+}
+return elorden;
+}
+
+
+function eliminar(id){
+  imagen = document.getElementById(id); 
+  padre = imagen.parentNode;
+  padre.removeChild(imagen);  
+}
+
+
+window.addEventListener("load",comenzar,false);  //  CARGA PAGINA ANTES DE LLAMAR FUNCION PRINCIPAL.
+
+</script>
+
+</head>
+
+<body>
+
+
+  
+  <input type="range" orient=vertical id="rango" min="3" max="10" value="3" step="1"></input>
+
+
+  <audio src="audios/acierto.mp3" id="acierto">Su navegador no soporta este audio</audio>
+  <audio src="audios/fallo.mp3" id="fallo">Su navegador no soporta este audio</audio>
+  <audio src="audios/terminado.mp3" id="terminado">Su navegador no soporta este audio</audio>
+  <audio src="audios/record.mp3" id="record">Su navegador no soporta este audio</audio>
+  
+    
+
+
+
+  <p id="text"></p>
+
+</body>
+</html>
