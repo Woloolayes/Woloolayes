@@ -106,7 +106,8 @@ function animacion(){
 			}else if (posicionesx[i]>960-radios[i]){ // reposicionar sobre pared derecha
 				posicionesx[i]=960-radios[i];
 			}
-			velocidadesx[i]*=-1;} // invierte la componente de velocidad perdendicular a la pared (horizontal)
+			velocidadesx[i]*=-1;// invierte la componente de velocidad perdendicular a la pared (horizontal)
+		} 
 		// Ajusta nueva Y según Vy
 		posicionesy[i]+=velocidadesy[i];			
 		//detecta choque con paredes en el eje Y para reposicionar y cambiar el sentido
@@ -117,6 +118,7 @@ function animacion(){
 				posicionesy[i]=540-radios[i]
 			}
 			velocidadesy[i]*=-1;} // invierte la componente de velocidad perpendicular a la pared (vertical)
+			
 		//detectar colisiones con las demas particulas		
 		for (let j=0; j<5; j++){ 
 			if (j==i){continue;}
@@ -124,65 +126,66 @@ function animacion(){
 			let distanciax=Math.abs(posicionesx[i]-posicionesx[j]);
 			let distanciay=Math.abs(posicionesy[i]-posicionesy[j]);
 			let distancia=Math.sqrt(Math.pow(distanciax,2)+Math.pow(distanciay,2));
-			// Calculo nuevas velocidades
+			
 			if (distancia>radios[i]+radios[j]){continue;}
-				// Hallamos los angulos que forman la velocidad de A y la de B respectivamente con la linea que une los centros de ambas particulas
-				let alfa=Math.acos((velocidadesx[i]*(posicionesx[j]-posicionesx[i])+velocidadesy[i]*(posicionesy[j]-posicionesy[i]))/(Math.sqrt(Math.pow(velocidadesx[i],2)+Math.pow(velocidadesy[i],2))*Math.sqrt(Math.pow(posicionesx[j]-posicionesx[i],2)+Math.pow(posicionesy[j]-posicionesy[i],2))));
+			// Calculo nuevas velocidades en caso de colisión
+			// Hallamos los angulos que forman la velocidad de A y la de B respectivamente con la linea que une los centros de ambas particulas
+			let alfa=Math.acos((velocidadesx[i]*(posicionesx[j]-posicionesx[i])+velocidadesy[i]*(posicionesy[j]-posicionesy[i]))/(Math.sqrt(Math.pow(velocidadesx[i],2)+Math.pow(velocidadesy[i],2))*Math.sqrt(Math.pow(posicionesx[j]-posicionesx[i],2)+Math.pow(posicionesy[j]-posicionesy[i],2))));
 
-				let beta=Math.PI-Math.acos((velocidadesx[j]*(posicionesx[i]-posicionesx[j])+velocidadesy[j]*(posicionesy[i]-posicionesy[j]))/(Math.sqrt(Math.pow(velocidadesx[j],2)+Math.pow(velocidadesy[j],2))*Math.sqrt(Math.pow(posicionesx[i]-posicionesx[j],2)+Math.pow(posicionesy[i]-posicionesy[j],2))));
-				// Calculamos las componentes tangencial y normal al plano de choque de las velocidades de ambas particulas. Solo la normal afecta
-				let VANx=velocidadesx[i]*Math.sin(alfa);
-				let VANy=velocidadesy[i]*Math.sin(alfa);
+			let beta=Math.PI-Math.acos((velocidadesx[j]*(posicionesx[i]-posicionesx[j])+velocidadesy[j]*(posicionesy[i]-posicionesy[j]))/(Math.sqrt(Math.pow(velocidadesx[j],2)+Math.pow(velocidadesy[j],2))*Math.sqrt(Math.pow(posicionesx[i]-posicionesx[j],2)+Math.pow(posicionesy[i]-posicionesy[j],2))));
+			// Calculamos las componentes tangencial y normal al plano de choque de las velocidades de ambas particulas. Solo la normal afecta
+			let VANx=velocidadesx[i]*Math.sin(alfa);
+			let VANy=velocidadesy[i]*Math.sin(alfa);
 
-				let VATx=velocidadesx[i]*Math.cos(alfa);
-				let VATy=velocidadesy[i]*Math.cos(alfa);
-
-
-				let VBNx=velocidadesx[j]*Math.sin(beta);
-				let VBNy=velocidadesy[j]*Math.sin(beta);
-
-				let VBTx=velocidadesx[j]*Math.cos(beta);
-				let VBTy=velocidadesy[j]*Math.cos(beta);
-
-				// trabajaremos con el modulo de las velocidades normales. primero calculamos sus vectores unitarios para despues multiplicar por los resultados
-
-				let moduloVAN=Math.sqrt(Math.pow(VANx,2)+Math.pow(VANy,2));
-				let moduloVBN=Math.sqrt(Math.pow(VBNx,2)+Math.pow(VBNy,2));
-
-				let versorANx=VANx/moduloVAN;
-				let versorANy=VANy/moduloVAN;
-
-				let versorBNx=VBNx/moduloVBN;
-				let versorBNy=VBNy/moduloVBN;
+			let VATx=velocidadesx[i]*Math.cos(alfa);
+			let VATy=velocidadesy[i]*Math.cos(alfa);
 
 
-				// Calculamos las velocidades normales despues del choque
+			let VBNx=velocidadesx[j]*Math.sin(beta);
+			let VBNy=velocidadesy[j]*Math.sin(beta);
 
-				let UAN=(moduloVAN*(Math.pow(radios[i],3)-Math.pow(radios[j],3))+2*moduloVBN*Math.pow(radios[j],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
-				let UBN=(moduloVBN*(Math.pow(radios[j],3)-Math.pow(radios[i],3))+2*moduloVAN*Math.pow(radios[i],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
+			let VBTx=velocidadesx[j]*Math.cos(beta);
+			let VBTy=velocidadesy[j]*Math.cos(beta);
 
-				// Lo anterior son modulos. Multiplicamos por sus versores para tener sus componentes vectoriales
+			// trabajaremos con el modulo de las velocidades normales. primero calculamos sus vectores unitarios para despues multiplicar por los resultados
 
-				let UANx=UAN*versorANx;
-				let UANy=UAN*versorANy;
+			let moduloVAN=Math.sqrt(Math.pow(VANx,2)+Math.pow(VANy,2));
+			let moduloVBN=Math.sqrt(Math.pow(VBNx,2)+Math.pow(VBNy,2));
 
-				let UBNx=UBN*versorBNx;
-				let UBNy=UBN*versorBNy;
+			let versorANx=VANx/moduloVAN;
+			let versorANy=VANy/moduloVAN;
 
-				// Sumamos estas componentes normales despues del choque con las tangenciales que no cambian y ya tenemos las nuevas velocidades
-
-				let UAx=UANx+VATx;
-				let UAy=UANy+VATy;
-
-				let UBx=UBNx+VBTx;
-				let UBy=UBNy+VBTy;
+			let versorBNx=VBNx/moduloVBN;
+			let versorBNy=VBNy/moduloVBN;
 
 
-				velocidadesx[i]=UAx;
-				velocidadesy[i]=UAy;
+			// Calculamos las velocidades normales despues del choque
 
-				velocidadesx[j]=UBx;
-				velocidadesy[j]=UBy;
+			let UAN=(moduloVAN*(Math.pow(radios[i],3)-Math.pow(radios[j],3))+2*moduloVBN*Math.pow(radios[j],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
+			let UBN=(moduloVBN*(Math.pow(radios[j],3)-Math.pow(radios[i],3))+2*moduloVAN*Math.pow(radios[i],3))/(Math.pow(radios[i],3)+Math.pow(radios[j],3));
+
+			// Lo anterior son modulos. Multiplicamos por sus versores para tener sus componentes vectoriales
+
+			let UANx=UAN*versorANx;
+			let UANy=UAN*versorANy;
+
+			let UBNx=UBN*versorBNx;
+			let UBNy=UBN*versorBNy;
+
+			// Sumamos estas componentes normales despues del choque con las tangenciales que no cambian y ya tenemos las nuevas velocidades
+
+			let UAx=UANx+VATx;
+			let UAy=UANy+VATy;
+
+			let UBx=UBNx+VBTx;
+			let UBy=UBNy+VBTy;
+
+
+			velocidadesx[i]=UAx;
+			velocidadesy[i]=UAy;
+
+			velocidadesx[j]=UBx;
+			velocidadesy[j]=UBy;
 		} // fin del bucle for interno			
 	} // fin del bucle for externo
 } // fin de la funcion animacion
