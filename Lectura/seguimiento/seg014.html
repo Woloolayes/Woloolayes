@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Seguimiento</title>
+<style>
+
+body{
+    background: linear-gradient(135deg, #ffd700, #ffb000);
+    background-image: url("../fondopapel.jpg");
+    /*background-repeat:no-repeat;*/
+	background-size: cover;
+	background-position: center;
+	background.z-index: -1;
+}
+
+div{
+	background-image: url("../fondopapel.jpg");
+	position: absolute;
+	width: auto;
+	z-index:+11;
+}
+
+p{
+	visibility: visible;
+	font-family: fantasy;
+	z-index:+10;
+}
+
+input{
+	background-image: url("../fondopapel.jpg");
+	width: 6.5vh;
+	background: #ffd700;
+}
+
+button{
+	color: white;
+	font-weight: 900;
+	font-size: 1.8vh;
+}
+
+button:hover{
+	border-color: #dddddd;
+	border-width: 0.5vh;
+	font-size: 2.1vh;
+}
+
+#botonaceptar{
+	background: green;
+	float: left;
+	width: 50%;
+	height: 4vh;
+}
+
+#botoncancelar{
+	background: red;
+	float: right;
+	width: 50%;
+	height: 4vh;
+}
+
+.neon:hover{
+	color: #ff8000;
+	text-shadow:
+		0 0 3px rgba(255,178,0,1),
+		0 0 6px rgba(255,178,0,1),
+		0 0 9px rgba(255,178,0,1),
+		0 0 12px rgba(127,104,38,1),
+		0 0 15px rgba(127,104,38,1),
+		0 0 18px rgba(127,104,38,1),
+		0 0 21px rgba(127,104,38,1),
+		0 0 24px rgba(127,104,38,1),
+		0 0 27px rgba(127,104,38,1);
+}
+
+#resultados{
+	position: absolute;	
+	top: 10vh;
+	left: 28vw;
+	/*height: 9vh;
+	width: 7vw;*/
+	font-size: 3vw;
+}
+
+</style>
+
+<script>
+
+
+// VARIABLES DE FLUJO DE PROGRAMA ************************************************************************************
+
+var bala = 0;
+
+ 
+ 
+
+
+// VARIABLES DE CONFIGURACION ****************************************************************************************
+
+var espacio = "\u00a0";
+
+// VARIABLES DEL JUEGO ***********************************************************************************************
+
+var tiempo=500;
+var turno=0;
+var objetivo=[];
+var antiobjetivo=[];
+var muestra=[];
+var cuentaturnos=0;
+var siguienteantiobjetivo=0;
+var turnosparaantiobjetivo=[];
+var int1=0; // interrupción para que no empiece la prueba hasta hacer click. mientras, sólo se vera la primera fijacion para aprehender las cifras.
+var int2=0; // vigila donde no puede haber muestra con antiobjetivo. En la función turnosmuestra().
+var turnosconantiobjetivo=[];
+var contenido=[];
+var mover;	// la usaremos para manejar el setInterval que moverá la muestra según el campo fijacionesporsegundo.
+var aciertos=0;
+var fallos=0;	// contabiliza pulsaciones erradas. 
+var pasadas=0; 	// contabiliza cuando se nos pasa sin ver.
+var pulsaciones=[];
+var tecla=false; // registra cuando se pulsa una tecla o click en la pantalla.	
+var multaen=[];
+
+
+
+
+function comenzar(){
+	
+	memoria();
+
+	revolver();
+	
+}////////////////////FIN COMENZAR()///////////////////////////////////////////////////////////////////////////////////
+
+
+function round(){
+	console.log('aciertos: ', aciertos, 'pasadas: ', pasadas, 'fallos ', fallos);
+	if (turnosconantiobjetivo[siguienteantiobjetivo]==cuentaturnos)
+	{ 
+		antiobjetivo = formaantiobjetivo();
+		muestra=antiobjetivo;											// Si a este turno corresponde muestra falsa.
+		multaen.push(cuentaturnos+intervalorespuesta+1);
+		siguienteantiobjetivo++;
+	}else{
+		muestra=objetivo;												// si no, muestra verdadera.
+	}
+
+	if (int1==1){		
+		cuentaturnos++;										// muestra resultados cuando acabe el test en modos de juego.
+		if (cuentaturnos>fijacionesportest && bala>1){		// La segunda condición es para que no pare de moverse en modo ajustes
+			int1=0; // detiene el movimiento.
+			clearInterval(mover);
+			bala=5;	// ve a mostrar resultados
+			revolver();
+		}
+		if (cuentaturnos>fijacionesportest && bala==1){		// en modo ajustes se reinicia el test.
+			cuentaturnos = 0;
+			siguienteantiobjetivo = 0;						// y se continua con las mismas muestras.
+		}
+	}
+	
+	if (int1==1 && bala>1){									// en modos de juego las pulsaciones se puntuan.
+		document.addEventListener("keydown", function(){tecla=true;}, false);
+		puntua();
+	}else{	
+		document.removeEventListener("keydown", function(){tecla=true;}, false);
+	}
+
+	if(cuentaturnos<=fijacionesportest){
+	pinta();
+	}
+}
+
+
+function puntua(){
+	if (tecla==true && cuentaturnos>1){
+
+		if (multaen.length>0){
+			a1.currentTime=0;
+			a1.play();
+			multaen.splice(0,1);				
+			aciertos++;
+		}else{
+			a2.currentTime=0;
+			a2.play();
+			fallos++;
+			}	
+	}else if(cuentaturnos==multaen[0]){
+		a3.currentTime=0;
+		a3.play();
+		pasadas++;
+		multaen.splice(0,1);
+		}			
+
+	tecla = false;
+}
+
+
+function pinta(){
+
+	switch(bala) {
+		case 1: 		// Controles del área de lectura.
+		case 2: 		// Práctica. 
+			borrapizarra();
+			let x = leftpizarra;
+			let y = toppizarra;
+			let z = 0; // lleva la cuenta de los turnos
+			contenidopizarra();
+
+			for (let j = altopizarra - 1; j >= 0; j--){	//bucle para crear cada uno de los renglones
+
+				x = leftpizarra;
+
+				
+				for (let i = anchopizarra - 1; i >= 0; i--) { //bucle para crear todos los caracteres de cada renglon		 
+
+					let p = document.createElement("p");
+					p.append(contenido[z]);
+					//p.append("-");
+					p.style.position = "absolute";
+					p.style.top = y +"px";
+					p.style.left = x +"px";
+					p.setAttribute("class", "tiza");
+					p.style.fontSize = ancholetra + "px";
+					document.body.appendChild(p);
+					x += separletras;
+					z++;
+				}
+
+				y += altorenglon;
+
+			}	
+			z = 0;
+			break;
+			
+
+
+
+	  	case 3: 		
+	  	case 4: 		// Competición
+
+
+
+
+			break;
+
+		default:
+	    	return 0;
+	}    	
+}
+
+
+function responsive(){
+	switch(bala) {
+	  case 0:
+	    menugeneral();
+	    break;
+	  case 1: 		// Controles de lectura
+	    anchopizarra = parseInt(anchopizarrainput.value);
+		altopizarra = parseInt(altopizarrainput.value);
+		ancholetra = parseInt(ancholetrainput.value);
+		separletras = parseInt(separletrasinput.value);
+		altorenglon = parseInt(altorengloninput.value);
+
+		fijacionesportest = parseInt(fijacionesportestinput.value);
+		tamanofijacion = parseInt(tamanofijacioninput.value);
+		fijacionesporsegundo = parseFloat(fijacionesporsegundoinput.value);
+		proporcionmuestras = parseInt(proporcionmuestrasinput.value);
+		intervalorespuesta = parseInt(intervalorespuestainput.value);
+
+		tiempo=1000/fijacionesporsegundo;
+
+		// ****** anchopizarra debe ser divisible por tamañofijación.**************	
+		if (anchopizarra < tamanofijacion){
+			anchopizarrainput.value = tamanofijacion;
+			anchopizarra = tamanofijacion;
+		}
+
+		anchopizarrainput.setAttribute ("step",tamanofijacion);
+		anchopizarrainput.setAttribute ("min",tamanofijacion);
+
+		if (anchopizarra % tamanofijacion!= 0){
+			for (let i=0; i<anchopizarra; i++) {
+				if((anchopizarra-i) % tamanofijacion==0){
+					anchopizarra-=i;	
+					anchopizarrainput.value = anchopizarra;				
+					break;
+				}else if((anchopizarra+i) % tamanofijacion==0){
+					anchopizarra+=i;
+					anchopizarrainput.value = anchopizarra;	
+					break;
+				}
+			}
+		}
+		//**************************************************************************
+
+		
+		turnosmuestra();
+
+		
+
+		
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - (((altopizarra - 1) * altorenglon) / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((anchopizarra - 1) * separletras) + ancholetra/1.9) / 2);
+		// siguiente paso a pintar
+		turno = 0;
+		cuentaturnos = 0;
+		siguienteantiobjetivo = 0;	
+	    objetivo = formaobjetivo();
+		// pinta lo nuevamente definido.
+		
+
+		
+		clearInterval(mover);
+		mover = setInterval(round,tiempo);
+
+	    break;
+	  case 2: 		// Práctica.
+
+
+		turnosmuestra();
+		
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - (((altopizarra - 1) * altorenglon) / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((anchopizarra - 1) * separletras) + ancholetra/1.9) / 2);
+		// siguiente paso a pintar
+		turno = 0;
+		cuentaturnos = 0;
+		siguienteantiobjetivo = 0;	
+	    objetivo = formaobjetivo();
+		// pinta lo nuevamente definido.
+		
+		document.addEventListener("keydown", function(){int1=1;} ,false);
+		
+		clearInterval(mover);
+		mover = setInterval(round,tiempo);
+
+		break;
+	  case 3: 		
+
+	  	borrapizarra()	
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - (((altopizarra - 1) * altorenglon) / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((anchopizarra - 1) * separletras) + ancholetra/1.9) / 2);
+		// pinta lo nuevamente definido
+		pinta();
+	  case 4: 		// Competición
+	    borrapizarra()	
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - (((altopizarra - 1) * altorenglon) / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((anchopizarra - 1) * separletras) + ancholetra/1.9) / 2);
+		// pinta lo nuevamente definido
+		pinta();
+	    break;
+	  case 3:
+	    resultado();
+	    break;
+	  default:
+	    return 0;
+	}	
+}
+
+
+function contenidopizarra(){
+
+	totalletras = anchopizarra * altopizarra;
+
+	for (let i=0; i<totalletras; i++){
+		if (i>=turno && i<turno+tamanofijacion){
+			contenido[i]=muestra[i-turno];
+		}else {contenido[i]="-";
+		}
+	}
+
+	if (int1==1){
+	turno+=tamanofijacion;		// movimiento tras pulsar una tecla en práctica o perpetuo en ajustes.
+	}
+
+	if (turno>=totalletras){	// Si llega al final de la pizarra, vuelve al principio.
+		turno=0;
+	}
+}
+
+
+function borrapizarra(){
+	// elimina lo anteriormente escrito
+    let elements = document.getElementsByClassName("tiza");
+    while(elements.length > 0){
+        elements[0].parentNode.removeChild(elements[0]);
+    }
+}
+
+////////// ELIMINA TODOS LOS ELEMENTOS DE LA PAGINA //////////////////////////
+function borrapagina(){
+    let elbody = document.body;
+    if (elbody.hasChildNodes()) {
+  elbody.removeChild(elbody.childNodes[0]);
+  borrapagina();
+	}    
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function resultado(){
+	return 0;
+}
+
+function revolver(){
+
+	switch(bala) {
+	  case 0:
+	    menugeneral();
+	    int1=0;
+	    break;
+	  case 1: 				// controles lectura
+	  	turno=0;
+	    menuseguimiento();	// despliega la tabla de controles
+	    int1=1; 			// pizarra en movimiento	
+	    break;
+	  case 2: 				// Práctica. 
+	  	borrapagina();
+	  	cargaraudios();
+	    responsive();
+	    break;
+	  case 3: 				// Práctica
+	  	
+	  	break;
+	  case 4: 				// Competición
+	  	turnosmuestra();
+	    break;
+	  case 5:
+	    muestraresultados();
+	    break;
+	  case 6:
+	    cuentasjugador();
+	    break;
+	  default:
+	    return 0;
+	}
+}
+
+
+
+function memoria(){
+	// menu aspecto del area de lectura
+	if (localStorage.getItem("toppizarra") != null) {
+		toppizarra = parseFloat(localStorage.getItem("toppizarra"));
+		leftpizarra = parseFloat(localStorage.getItem("leftpizarra"));
+
+		altopizarra = parseFloat(localStorage.getItem("altopizarra")); 	// en renglones
+		anchopizarra = parseFloat(localStorage.getItem("anchopizarra")); 	// en caracteres por renglon
+
+		ancholetra = parseFloat(localStorage.getItem("ancholetra"));
+		separletras = parseFloat(localStorage.getItem("separletras"));
+		altorenglon = parseFloat(localStorage.getItem("altorenglon"));
+	}else{					// valores por defecto al borrar el historial
+		toppizarra = 0;
+		leftpizarra = 0;
+
+		altopizarra = 7; 	// en renglones
+		anchopizarra = 10; 	// en caracteres por renglon
+
+		ancholetra = 60;
+		separletras = 55;
+		altorenglon = 70;
+	}
+
+	// menu velocidad de lectura
+	if (localStorage.getItem("fijacionesportest") != null) {	
+		fijacionesportest = parseFloat(localStorage.getItem("fijacionesportest"));
+		tamanofijacion = parseFloat(localStorage.getItem("tamanofijacion"));
+		fijacionesporsegundo = parseFloat(localStorage.getItem("fijacionesporsegundo"));
+		proporcionmuestras = parseFloat(localStorage.getItem("proporcionmuestras"));
+		intervalorespuesta = parseFloat(localStorage.getItem("intervalorespuesta"));
+	}else{					// valores por defecto al borrar el historial
+		fijacionesportest = 100;
+		tamanofijacion = 4;
+		fijacionesporsegundo = 10;
+		proporcionmuestras = 17;
+		intervalorespuesta = 3;
+	}
+
+	totalletras = anchopizarra * altopizarra;
+}
+
+
+function formaobjetivo(){
+
+	let guarismos=["0","1","2","3","4","5","6","7","8","9"," "," "," "," "," "];
+	let eleccion;
+
+		for (let i=0; i<tamanofijacion; i++){
+			if (tamanofijacion<4 || objetivo[i-1]==" " || i==0 || i==tamanofijacion-1){
+				eleccion=9;
+			}else if (tamanofijacion>3 && tamanofijacion<5){
+				eleccion=10;
+			}else if (tamanofijacion>4 && tamanofijacion<7){
+				eleccion=11;
+			}else if (tamanofijacion>6 && tamanofijacion<9){
+				eleccion=12;
+			}else if (tamanofijacion>8 && tamanofijacion<12){
+				eleccion=13;
+			}else{
+				eleccion=14;
+			}
+			objetivo[i]=guarismos[Math.round(Math.random() * eleccion)];
+			}
+		return objetivo;
+}
+
+
+function formaantiobjetivo(){	
+	
+	let sologuarismos=["0","1","2","3","4","5","6","7","8","9"];
+	let paracambiar=[];
+
+	for (i=0; i<tamanofijacion; i++){
+		antiobjetivo[i]=objetivo[i];
+	}
+
+	for (let u=0; u<tamanofijacion; u++){
+			if (objetivo[u]==" ")
+				{continue;
+			}else{paracambiar.push(u);
+					}
+		}
+
+	let posicionFalsa= paracambiar[Math.round(Math.random() * (paracambiar.length-1))];	
+	
+	let index = sologuarismos.indexOf(antiobjetivo[posicionFalsa]);
+
+	sologuarismos.splice(index,1);
+
+	let cifraFalsa=sologuarismos[Math.round(Math.random() * 8)];
+
+	antiobjetivo[posicionFalsa]=cifraFalsa;	
+
+	return antiobjetivo;
+}
+
+
+function turnosmuestra(){
+	turnosconantiobjetivo = turnosnoconsec(fijacionesportest, Math.floor(fijacionesportest*proporcionmuestras/100), 1, intervalorespuesta);
+}
+
+
+function muestraresultados(){
+
+	// Eliminamos todos los elementos de la pantalla.
+	borrapagina();	
+	// al párrafo le añadimos un id para poder darle cualidades con CSS
+	let p = document.createElement("p");
+    p.setAttribute("id", "resultados");								
+    p.innerHTML = 	"TOTAL MUESTRAS = " + (aciertos + pasadas) + 
+    				"<br> <br> ACIERTOS = " + aciertos + 
+    				"<br> <br> SE TE HAN PASADO = " + pasadas +
+    				"<br> <br> HAS PULSADO CUANDO NO TOCABA = " + fallos +    				
+    				"<br> <br> TU NIVEL HA SIDO DEL " + Math.trunc(100* (aciertos - fallos) / (aciertos + pasadas)) + "%";
+    document.body.appendChild(p);
+
+    a4.play();
+}
+
+
+//// ELIGE (NTURNOS) TURNOS ALEATORIOS, NUNCA CONSECUTIVOS, DE UN RANGO DADO, ELIMINANDO TAMBIÉN LOS N1 PRIMEROS Y LOS N2 ÚLTIMOS/////////////
+/////ADEMÁS ORDENA LAS ALTERNATIVAS DE MENOR A MAYOR. NTURNOS DEBE SER INFERIOR AL 50% DE (RANGO-N1-N2). REQUIERE LA FUNCIÓN ALEATORIOENTRE()////////////////////////////
+function turnosnoconsec(rango, nturnos, n1, n2){ 
+        
+    let contenedor=[]; // iremos eliminando los elementos seleccionados y sus consecutivos.
+    for (i=0; i<rango; i++){
+        contenedor[i]=i;
+    }
+    
+    contenedor.splice(0,n1);
+    contenedor.splice(contenedor.length-n2,n2);
+    
+    let resultado = [];
+    // si hay turnos consecutivos al elegido, elimínalo en contenedor[].
+    // repite el proceso hasta que resultado.length = nturnos o bien contenedor.lenght=0.
+    while(resultado.length<nturnos && contenedor.length>0){
+        // escoge al azar uno de los turnos. Guárdalo en resultado[].
+        let alea=contenedor[aleatorioentre(0, contenedor.length-1)];
+        resultado.push(alea);        
+        // elimina dicho turno y sus dos vecinos consecutivos, de haberlos, en el contenedor.
+        let index = contenedor.indexOf(alea); 
+        contenedor.splice(index,1);
+        
+        let index1 = contenedor.indexOf(alea-1);
+        if (index1>=0){
+        contenedor.splice(index1,1);
+        }
+
+        let index2 = contenedor.indexOf(alea+1);
+        if (index2>=0){
+        contenedor.splice(index2,1);
+        }     
+    }
+    resultado.sort((a, b) => a - b);
+    return resultado;
+  } ///////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////DEVUELVE UN Nº ENTERO ALEATORIO ENTRE MIN Y MAX, AMBOS INCLUSIVE//////////////////////////////////////////
+function aleatorioentre(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+function menuseguimiento(){
+
+	borrapagina();
+	memoria();
+						//************************ DEF controles **********************
+	controles1 = document.createElement("div");	
+	//body reference 
+  	let body = document.getElementsByTagName("body")[0];
+
+  	// create elements <table> and a <tbody>
+  	let tbl = document.createElement("table");
+  	let tblBody = document.createElement("tbody");
+
+  	//-----------------pizarra-----------------------------------
+	let row1 = document.createElement("tr");
+	let cell1a = document.createElement("td");
+	let cell1b = document.createElement("td");
+	let p1 = document.createElement("p");
+	anchopizarrainput = document.createElement("input");			//************************ DEF anchopizarrainput **************
+	anchopizarrainput.setAttribute ("type","number");
+	anchopizarrainput.setAttribute ("id","anchopizarrainput");
+	anchopizarrainput.setAttribute ("step",tamanofijacion);
+	anchopizarrainput.setAttribute ("min",tamanofijacion);
+	p1.append("Ancho Lectura");
+	cell1a.appendChild(p1);
+	cell1b.appendChild(anchopizarrainput);
+	row1.appendChild(cell1a);
+	row1.appendChild(cell1b);
+	tblBody.appendChild(row1);
+
+
+	let row2 = document.createElement("tr");
+	let cell2a = document.createElement("td");
+	let cell2b = document.createElement("td");
+	let p2 = document.createElement("p");
+	altopizarrainput = document.createElement("input");			//************************ DEF altopizarrainput **************
+	altopizarrainput.setAttribute ("type","number");
+	altopizarrainput.setAttribute ("id","altopizarrainput");
+	altopizarrainput.setAttribute ("step","1");
+	altopizarrainput.setAttribute ("min",1);
+	p2.append("Alto Lectura");
+	cell2a.appendChild(p2);
+	cell2b.appendChild(altopizarrainput);
+	row2.appendChild(cell2a);
+	row2.appendChild(cell2b);
+	tblBody.appendChild(row2);
+
+
+	let row3 = document.createElement("tr");
+	let cell3a = document.createElement("td");
+	let cell3b = document.createElement("td");
+	let p3 = document.createElement("p");
+	ancholetrainput = document.createElement("input");			//************************ DEF ancholetrainput **************
+	ancholetrainput.setAttribute ("type","number");
+	ancholetrainput.setAttribute ("id","ancholetrainput");
+	ancholetrainput.setAttribute ("step","1");
+	ancholetrainput.setAttribute ("min",20);
+	p3.append("Tama\u00f1o fuente");
+	cell3a.appendChild(p3);
+	cell3b.appendChild(ancholetrainput);
+	row3.appendChild(cell3a);
+	row3.appendChild(cell3b);
+	tblBody.appendChild(row3);
+
+
+	let row4 = document.createElement("tr");
+	let cell4a = document.createElement("td");
+	let cell4b = document.createElement("td");
+	let p4 = document.createElement("p");
+	separletrasinput = document.createElement("input");			//************************ DEF separletrasinput **************
+	separletrasinput.setAttribute ("type","number");
+	separletrasinput.setAttribute ("id","separletrasinput");
+	separletrasinput.setAttribute ("step","1");
+	separletrasinput.setAttribute ("min","1");
+	p4.append("Separaci\u00f3n Caracteres", espacio);
+	cell4a.appendChild(p4);
+	cell4b.appendChild(separletrasinput);
+	row4.appendChild(cell4a);
+	row4.appendChild(cell4b);
+	tblBody.appendChild(row4);
+
+
+	let row5 = document.createElement("tr");
+	let cell5a = document.createElement("td");
+	let cell5b = document.createElement("td");
+	let p5 = document.createElement("p");
+	altorengloninput = document.createElement("input");			//************************ DEF anchopizarrainput **************
+	altorengloninput.setAttribute ("type","number");
+	altorengloninput.setAttribute ("id","altorengloninput");
+	altorengloninput.setAttribute ("step","1");
+	altorengloninput.setAttribute ("min","1");
+	p5.append("Separaci\u00f3n Renglones");
+	cell5a.appendChild(p5);
+	cell5b.appendChild(altorengloninput);
+	row5.appendChild(cell5a);
+	row5.appendChild(cell5b);
+	tblBody.appendChild(row5);
+
+	//-----------------dinámica-----------------------------------
+	let row6 = document.createElement("tr");
+	let cell6a = document.createElement("td");
+	let cell6b = document.createElement("td");
+	let p6 = document.createElement("p");
+	fijacionesportestinput = document.createElement("input");			//************************ DEF Fijaciones/Test **************
+	fijacionesportestinput.setAttribute ("type","number");
+	fijacionesportestinput.setAttribute ("id","Fijacionesportestinput");
+	fijacionesportestinput.setAttribute ("step","1");
+	fijacionesportestinput.setAttribute ("min",10);
+	p6.append("Fijaciones/Test");
+	cell6a.appendChild(p6);
+	cell6b.appendChild(fijacionesportestinput);
+	row6.appendChild(cell6a);
+	row6.appendChild(cell6b);
+	tblBody.appendChild(row6);
+
+
+	let row7 = document.createElement("tr");
+	let cell7a = document.createElement("td");
+	let cell7b = document.createElement("td");
+	let p7 = document.createElement("p");
+	tamanofijacioninput = document.createElement("input");				//************************ DEF tamañoficación **************
+	tamanofijacioninput.setAttribute ("type","number");
+	tamanofijacioninput.setAttribute ("id","tamanofijacioninput");
+	tamanofijacioninput.setAttribute ("step","1");
+	tamanofijacioninput.setAttribute ("min","1");
+	p7.append("Tama\u00f1o Fijaci\u00f3n");
+	cell7a.appendChild(p7);
+	cell7b.appendChild(tamanofijacioninput);
+	row7.appendChild(cell7a);
+	row7.appendChild(cell7b);
+	tblBody.appendChild(row7);
+
+
+	let row8 = document.createElement("tr");
+	let cell8a = document.createElement("td");
+	let cell8b = document.createElement("td");
+	let p8 = document.createElement("p");
+	fijacionesporsegundoinput = document.createElement("input");		//************************ DEF Fijaciones/Segundo **************
+	fijacionesporsegundoinput.setAttribute ("type","number");
+	fijacionesporsegundoinput.setAttribute ("id","fijacionesporsegundoinput");
+	fijacionesporsegundoinput.setAttribute ("step","0.25");
+	fijacionesporsegundoinput.setAttribute ("min","0.25");
+	p8.append("Fijaciones/Segundo");
+	cell8a.appendChild(p8);
+	cell8b.appendChild(fijacionesporsegundoinput);
+	row8.appendChild(cell8a);
+	row8.appendChild(cell8b);
+	tblBody.appendChild(row8);
+
+
+	let row9 = document.createElement("tr");
+	let cell9a = document.createElement("td");
+	let cell9b = document.createElement("td");
+	let p9 = document.createElement("p");
+	proporcionmuestrasinput = document.createElement("input");			//************************ DEF Proporción Muestras **************
+	proporcionmuestrasinput.setAttribute ("type","number");
+	proporcionmuestrasinput.setAttribute ("id","proporcionmuestrasinput");
+	proporcionmuestrasinput.setAttribute ("step","1");
+	proporcionmuestrasinput.setAttribute ("min","1");
+	proporcionmuestrasinput.setAttribute ("max","35");
+	p9.append("Tasa de Muestras");
+	cell9a.appendChild(p9);
+	cell9b.appendChild(proporcionmuestrasinput);
+	row9.appendChild(cell9a);
+	row9.appendChild(cell9b);
+	tblBody.appendChild(row9);
+
+
+	let row10 = document.createElement("tr");
+	let cell10a = document.createElement("td");
+	let cell10b = document.createElement("td");
+	let p10 = document.createElement("p");
+	intervalorespuestainput = document.createElement("input");			//************************ DEF Intervalo Respuesta **************
+	intervalorespuestainput.setAttribute ("type","number");
+	intervalorespuestainput.setAttribute ("id","intervalorespuestainput");
+	intervalorespuestainput.setAttribute ("step","1");
+	intervalorespuestainput.setAttribute ("min","1");
+	intervalorespuestainput.setAttribute ("max","9");
+	p10.append("Intervalo Respuesta");
+	cell10a.appendChild(p10);
+	cell10b.appendChild(intervalorespuestainput);
+	row10.appendChild(cell10a);
+	row10.appendChild(cell10b);
+	tblBody.appendChild(row10); 
+
+
+
+  	// append the <tbody> inside the <table>
+  	tbl.appendChild(tblBody);
+  	controles1.appendChild(tbl);
+  	// put <table> in the <body>
+  	body.appendChild(controles1);
+
+
+//---------------------------botones-------------------------------------
+
+	let b1 = document.createElement("button");							//******************** DEF Botones aceptar y cancelar *********
+	b1.setAttribute ("type","button");
+	b1.setAttribute ("id","botonaceptar");
+	b1.innerText = 'Aceptar';
+	controles1.appendChild(b1);
+
+	let b2 = document.createElement("button");
+	b2.setAttribute ("type","button");
+	b2.setAttribute ("id","botoncancelar");
+	b2.innerText = 'Cancelar';
+	controles1.appendChild(b2);
+
+	document.body.appendChild(controles1);
+
+
+	// asigna valores
+	anchopizarrainput.value = anchopizarra;
+	altopizarrainput.value = altopizarra;
+	ancholetrainput.value = ancholetra;
+	separletrasinput.value = separletras;
+	altorengloninput.value = altorenglon;
+
+	fijacionesportestinput.value = fijacionesportest;
+	tamanofijacioninput.value = tamanofijacion;
+	fijacionesporsegundoinput.value = fijacionesporsegundo;
+	proporcionmuestrasinput.value = proporcionmuestras;
+	intervalorespuestainput.value = intervalorespuesta;
+
+	// Eventlistener
+
+	controles1.addEventListener("click", responsive, false);
+
+	b1.addEventListener("click", function(){				// Botón Aceptar, memoriza nuevas variables y regresa a menú principal.
+		localStorage.setItem("toppizarra",toppizarra);
+		localStorage.setItem("leftpizarra",leftpizarra);
+		localStorage.setItem("altopizarra",altopizarra);
+		localStorage.setItem("anchopizarra",anchopizarra);
+		localStorage.setItem("ancholetra",ancholetra);
+		localStorage.setItem("separletras",separletras);
+		localStorage.setItem("altorenglon",altorenglon);
+
+		localStorage.setItem("fijacionesportest",fijacionesportest);
+		localStorage.setItem("tamanofijacion",tamanofijacion);
+		localStorage.setItem("fijacionesporsegundo",fijacionesporsegundo);
+		localStorage.setItem("proporcionmuestras",proporcionmuestras);
+		localStorage.setItem("intervalorespuesta",intervalorespuesta);
+
+		bala = 0;
+		revolver();
+	}, false);
+
+	b2.addEventListener("click", function(){				// Botón Cancelar, regresa a menú principal sin guardar nada.
+		bala = 0;
+		revolver();
+	})
+	responsive();
+}
+
+
+
+function menugeneral(){
+
+	// Borra lo anterior
+	borrapagina();
+	
+	// Crea el menú de juego
+	//************************ DEF menú **********************
+	controles2 = document.createElement("div");
+	controles2.style.position = "absolute";
+	//controles.style.left = "23vw";
+	controles2.style.fontSize = "7vh";
+	controles2.style.textAlign = "center";
+
+	//************************ DEF controles de aspecto del espacio de lectura y dinámica de juego**************
+	let p1 = document.createElement("p");							
+	p1.setAttribute ("class","neon");
+	p1.setAttribute ("id","p1");
+	p1.append("Controles de Lectura");
+	controles2.appendChild(p1);
+//************************ DEF datos jugador / cambio de jugador **************
+	let p3 = document.createElement("p")							
+	//p3.setAttribute ("class","neon");
+	p3.setAttribute ("id","p3");
+	p3.append("Cuentas de Jugador");
+	controles2.appendChild(p3);
+//************************ DEF práctica **************
+	let p2 = document.createElement("p")							
+	p2.setAttribute ("class","neon");
+	p2.setAttribute ("id","p2");
+	p2.append("Iniciar Pr\u00e1ctica");
+	controles2.appendChild(p2);
+//************************ DEF competición **************
+	let p5 = document.createElement("p")							
+	//p5.setAttribute ("class","neon");
+	p5.setAttribute ("id","p5");
+	p5.append("Iniciar competici\u00f3n");
+	controles2.appendChild(p5);
+
+	document.body.appendChild(controles2);
+	controles2.style.position = "absolute";
+	controles2.style.left =  "35%";
+
+	controles2.addEventListener("click", function(event){
+		let eleccion = (event.target.id);
+		bala = parseInt(eleccion.slice(1,2));
+		revolver();		
+	}, false);
+}
+
+
+function cargaraudios(){
+	//Carga los audios.
+	a1 = document.createElement("audio");
+	a1.setAttribute ("id","acierto");
+	a1.setAttribute ("src","audios/acierto.mp3");
+
+	a2 = document.createElement("audio");
+	a2.setAttribute ("id","fallo");
+	a2.setAttribute ("src","audios/fallo.mp3");
+
+	a3 = document.createElement("audio");
+	a3.setAttribute ("id","sepaso");
+	a3.setAttribute ("src","audios/sepaso.mp3");
+
+	a4 = document.createElement("audio");
+	a4.setAttribute ("id","terminado");
+	a4.setAttribute ("src","audios/terminado.mp3");
+}
+
+
+window.addEventListener("load",comenzar,false);
+
+</script>
+
+</head>
+
+<body>
+
+
+
+</body>
+</html>
