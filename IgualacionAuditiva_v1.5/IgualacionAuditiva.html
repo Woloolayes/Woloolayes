@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Igualacion_Auditiva</title>
+<link rel="stylesheet" href="estilosIgualacionAuditiva.css"/>
+
+<script>
+
+var m=1;  //fases (de 1 a 11)
+var n=1;  //ensayos (de 1 a 20)
+var b=2;    //Último botón bulsado (izqu=1, der=0)
+var c=0; //próximo gif a mostrar
+
+var gif=[
+"imagenes/gifs/gif001.gif",
+"imagenes/gifs/gif002.gif",
+"imagenes/gifs/gif003.gif",
+"imagenes/gifs/gif004.gif",
+"imagenes/gifs/gif005.gif",
+"imagenes/gifs/gif006.gif",
+"imagenes/gifs/gif007.gif",
+"imagenes/gifs/gif008.gif",
+"imagenes/gifs/gif009.gif",
+"imagenes/gifs/gif010.gif",
+"imagenes/gifs/gif011.gif",
+"imagenes/gifs/gif012.gif",
+"imagenes/gifs/gif013.gif",
+"imagenes/gifs/gif014.gif",
+"imagenes/gifs/gif015.gif",
+"imagenes/gifs/gif016.gif",
+"imagenes/gifs/gif017.gif",
+"imagenes/gifs/gif018.gif",
+"imagenes/gifs/gif019.gif",
+"imagenes/gifs/gif020.gif",
+"imagenes/gifs/gif021.gif",
+"imagenes/gifs/gif022.gif",
+"imagenes/gifs/gif023.gif",
+"imagenes/gifs/gif024.gif",
+"imagenes/gifs/gif025.gif",
+"imagenes/gifs/gif026.gif",
+"imagenes/gifs/gif027.gif",
+"imagenes/gifs/gif028.gif",
+"imagenes/gifs/gif029.gif",
+"imagenes/gifs/gif030.gif"
+]
+
+function comenzar(){
+document.getElementById('gif').src=gif[c];
+let audio =[  
+  [document.getElementById('f1a1'),
+  document.getElementById('f1a2'),
+  document.getElementById('f1a3'),
+  document.getElementById('f1a4'),
+  document.getElementById('f1a5')],  
+  [document.getElementById('f2a1'),
+  document.getElementById('f2a2'),
+  document.getElementById('f2a3'),
+  document.getElementById('f2a4'),
+  document.getElementById('f2a5'),
+  document.getElementById('f2b1')],
+  [document.getElementById('f3a1'),
+  document.getElementById('f3a2'),
+  document.getElementById('f3a3'),
+  document.getElementById('f3a4'),
+  document.getElementById('f3a5'),
+  document.getElementById('f3b1'),
+  document.getElementById('f3b2'),
+  document.getElementById('f3b3'),
+  document.getElementById('f3b4'),
+  document.getElementById('f3b5')],  
+  [document.getElementById('f4a1'),
+  document.getElementById('f4a2'),
+  document.getElementById('f4a3'),
+  document.getElementById('f4a4'),
+  document.getElementById('f4a5'),
+  document.getElementById('f4b1'),
+  document.getElementById('f4b2'),
+  document.getElementById('f4b3'),
+  document.getElementById('f4b4'),
+  document.getElementById('f4b5')],
+  [document.getElementById('f5a1'),
+  document.getElementById('f5a2'),
+  document.getElementById('f5a3'),
+  document.getElementById('f5a4'),
+  document.getElementById('f5a5'),
+  document.getElementById('f5b1'),
+  document.getElementById('f5b2'),
+  document.getElementById('f5b3'),
+  document.getElementById('f5b4'),
+  document.getElementById('f5b5')],
+  [document.getElementById('f6a1'),
+  document.getElementById('f6a2'),
+  document.getElementById('f6a3'),
+  document.getElementById('f6a4'),
+  document.getElementById('f6a5'),
+  document.getElementById('f6b1'),
+  document.getElementById('f6b2'),
+  document.getElementById('f6b3'),
+  document.getElementById('f6b4'),
+  document.getElementById('f6b5')],
+  [document.getElementById('f7a1'),
+  document.getElementById('f7a2'),
+  document.getElementById('f7a3'),
+  document.getElementById('f7a4'),
+  document.getElementById('f7a5'),
+  document.getElementById('f7b1'),
+  document.getElementById('f7b2'),
+  document.getElementById('f7b3'),
+  document.getElementById('f7b4'),
+  document.getElementById('f7b5')],
+  [document.getElementById('f8a1'),
+  document.getElementById('f8a2'),
+  document.getElementById('f8a3'),
+  document.getElementById('f8a4'),
+  document.getElementById('f8a5'),
+  document.getElementById('f8b1'),
+  document.getElementById('f8b2'),
+  document.getElementById('f8b3'),
+  document.getElementById('f8b4'),
+  document.getElementById('f8b5')],
+  [document.getElementById('f9a1'),
+  document.getElementById('f9a2'),
+  document.getElementById('f9a3'),
+  document.getElementById('f9a4'),
+  document.getElementById('f9a5'),
+  document.getElementById('f9b1'),
+  document.getElementById('f9b2'),
+  document.getElementById('f9b3'),
+  document.getElementById('f9b4'),
+  document.getElementById('f9b5')],
+  [document.getElementById('f10a1'),
+  document.getElementById('f10a2'),
+  document.getElementById('f10a3'),
+  document.getElementById('f10a4'),
+  document.getElementById('f10a5'),
+  document.getElementById('f10b1'),
+  document.getElementById('f10b2'),
+  document.getElementById('f10b3'),
+  document.getElementById('f10b4'),
+  document.getElementById('f10b5')],
+  [document.getElementById('f11a1'),
+  document.getElementById('f11a2'),
+  document.getElementById('f11a3'),
+  document.getElementById('f11a4'),
+  document.getElementById('f11a5'),
+  document.getElementById('f11b1'),
+  document.getElementById('f11b2'),
+  document.getElementById('f11b3'),
+  document.getElementById('f11b4'),
+  document.getElementById('f11b5')],
+];
+
+//ajuste de los volúmenes de los audios para que suenen todos iguales.
+
+audio[0][0].volume=0.3;
+audio[0][1].volume=0.3;
+audio[0][2].volume=0.3;
+audio[0][3].volume=0.3;
+audio[0][4].volume=0.3;
+
+
+audio[1][0].volume=1;
+audio[1][1].volume=0.3;
+audio[1][2].volume=0.3;
+audio[1][3].volume=0.3;
+audio[1][4].volume=0.3;
+audio[1][5].volume=0.4;
+
+
+audio[2][0].volume=0.6;
+audio[2][1].volume=0.3;
+audio[2][2].volume=0.6;
+audio[2][3].volume=0.7;
+audio[2][4].volume=0.6;
+
+audio[2][5].volume=0.3;
+audio[2][6].volume=0.7;
+audio[2][7].volume=0.3;
+audio[2][8].volume=0.3;
+audio[2][9].volume=0.6;
+
+
+audio[3][0].volume=0.3;
+audio[3][1].volume=0.3;
+audio[3][2].volume=0.7;
+audio[3][3].volume=0.5;
+audio[3][4].volume=0.3;
+
+audio[3][5].volume=0.3;
+audio[3][6].volume=0.3;
+audio[3][7].volume=0.3;
+audio[3][8].volume=0.6;
+audio[3][9].volume=0.7;
+
+
+audio[4][0].volume=1;
+audio[4][1].volume=1;
+audio[4][2].volume=1;
+audio[4][3].volume=1;
+audio[4][4].volume=1;
+
+audio[4][5].volume=0.3;
+audio[4][6].volume=0.3;
+audio[4][7].volume=0.3;
+audio[4][8].volume=0.3;
+audio[4][9].volume=0.3;
+
+
+audio[5][0].volume=1;
+audio[5][1].volume=1;
+audio[5][2].volume=1;
+audio[5][3].volume=1;
+audio[5][4].volume=1;
+
+audio[5][5].volume=1;
+audio[5][6].volume=1;
+audio[5][7].volume=1;
+audio[5][8].volume=1;
+audio[5][9].volume=1;
+
+
+audio[6][0].volume=1;
+audio[6][1].volume=1;
+audio[6][2].volume=1;
+audio[6][3].volume=1;
+audio[6][4].volume=1;
+
+audio[6][5].volume=1;
+audio[6][6].volume=1;
+audio[6][7].volume=1;
+audio[6][8].volume=1;
+audio[6][9].volume=1;
+
+
+audio[7][0].volume=1;
+audio[7][1].volume=1;
+audio[7][2].volume=1;
+audio[7][3].volume=1;
+audio[7][4].volume=1;
+
+audio[7][5].volume=1;
+audio[7][6].volume=1;
+audio[7][7].volume=1;
+audio[7][8].volume=1;
+audio[7][9].volume=1;
+
+
+audio[8][0].volume=1;
+audio[8][1].volume=1;
+audio[8][2].volume=1;
+audio[8][3].volume=1;
+audio[8][4].volume=1;
+
+audio[8][5].volume=1;
+audio[8][6].volume=1;
+audio[8][7].volume=1;
+audio[8][8].volume=1;
+audio[8][9].volume=1;
+
+
+audio[9][0].volume=1;
+audio[9][1].volume=1;
+audio[9][2].volume=1;
+audio[9][3].volume=1;
+audio[9][4].volume=1;
+
+audio[9][5].volume=1;
+audio[9][6].volume=1;
+audio[9][7].volume=1;
+audio[9][8].volume=1;
+audio[9][9].volume=1;
+
+
+audio[10][0].volume=1;
+audio[10][1].volume=1;
+audio[10][2].volume=1;
+audio[10][3].volume=1;
+audio[10][4].volume=1;
+
+audio[10][5].volume=1;
+audio[10][6].volume=1;
+audio[10][7].volume=1;
+audio[10][8].volume=1;
+audio[10][9].volume=1;
+
+//final ajuste de los volúmenes de los audios para que suenen todos iguales.
+
+
+
+let choose = Math.round(Math.random(1));
+
+
+if(choose==0){
+  choose1=4}else{
+  choose1=-1;
+  }
+
+if(choose==0){
+  choose2=-1}else{
+  choose2=4;
+  }
+
+
+let elaudio= function(){
+  switch (m){
+    case 3:
+      audio[m-1][orden[m-1][n-1]+choose1].currentTime=0;
+      audio[m-1][orden[m-1][n-1]+choose1].play();
+      break;
+    case 4:
+      audio[m-1][orden[m-1][n-1]+choose1].currentTime=0;
+      audio[m-1][orden[m-1][n-1]+choose1].play();
+      break;
+    default:
+      audio[m-1][orden[m-1][n-1]-1].currentTime=0;
+      audio[m-1][orden[m-1][n-1]-1].play();
+      break;
+  }
+}
+
+let elantiaudio= function(){
+  switch (m){
+    case 1:
+      return 0;
+      break;
+    case 2:      
+      audio[m-1][5].currentTime=0;
+      audio[m-1][5].play();
+      break;
+    case 3:
+      audio[m-1][orden[m-1][n-1]+choose2].currentTime=0;
+      audio[m-1][orden[m-1][n-1]+choose2].play();
+      break;
+    case 4:
+      audio[m-1][orden[m-1][n-1]+choose2].currentTime=0;
+      audio[m-1][orden[m-1][n-1]+choose2].play();
+      break;
+    default:
+      audio[m-1][orden[m-1][n-1]+4].currentTime=0;
+      audio[m-1][orden[m-1][n-1]+4].play();
+      break;
+  }  
+}
+
+
+
+
+let btn2 = function(){
+  b=1;  
+  
+  let suena = [elantiaudio, elaudio];
+  suena[positivos[m-1][n-1]]();
+}
+
+let btn3 = function(){
+  b=0;
+  let suena = [elantiaudio, elaudio];  
+  suena[1-positivos[m-1][n-1]]();
+}
+
+
+document.getElementById("nfase").value=m;
+
+document.getElementById("nensayo").value=n;
+
+document.getElementById('resultado').addEventListener("click",result,false); 
+
+document.getElementById("bt1").addEventListener("click",elaudio,false); 
+
+document.getElementById('bt2').addEventListener("click",btn2,false);
+
+document.getElementById('bt3').addEventListener("click",btn3,false);
+
+document.getElementById('fi').addEventListener("click",fmenos,false);
+document.getElementById('fd').addEventListener("click",fmas,false);
+document.getElementById('ei').addEventListener("click",emenos,false);
+document.getElementById('ed').addEventListener("click",emas,false);
+
+
+
+
+
+
+
+document.getElementById("gif").style.zIndex = "1";
+
+
+/*final proceso para cada ensayo*/
+
+}/*final funcion comenzar*/
+
+function fmas(){  
+  if(m==11){
+    return 0;
+  }else{
+    m++;
+  }
+  comenzar();
+}
+
+function fmenos(){     
+  if(m==1){
+    location.replace("Pre-ense%C3%B1anza_B.html");
+  }else {
+    m--;
+  }
+  comenzar();
+}
+
+function emas(){ 
+  if(n==20 && m==11){
+    return 0;
+  }
+  else if(n==20){
+    m++;
+    n=1;
+  }else {
+    n++;
+  }
+  comenzar();
+}
+
+function emenos(){  
+  if(n==1 && m==1){
+    return 0;
+  }else if(n==1){
+    n=20;
+    m--;
+  }else {
+    n--;
+  }  
+  comenzar();
+}
+
+
+
+function result(){
+
+victoria();
+
+  if (m==11 && n==20){
+    document.getElementById("ensayo").innerHTML="prueba de igualación auditiva completada";
+    finalizar();
+  }else if (n==20){
+    n=1;
+    m++;
+    comenzar();
+  }else{
+    n++;
+    comenzar();
+  }  
+}
+
+
+function victoria(){
+    if (b==positivos[m-1][n-1]){
+    document.getElementById('muybien').play();    
+    document.getElementById('gif').style.visibility="visible";    
+    setTimeout(function(){
+      document.getElementById('gif').style.visibility="hidden";
+      if (c==29){
+            c=0;
+          }else {
+            c++;                
+          } 
+    }, 3000);     
+  } 
+  b=2;
+}
+
+function finalizar(){
+  eliminar("bt1");
+  eliminar("bt2");
+  eliminar("bt3");
+  eliminar("raya");
+  eliminar("fase");
+  //eliminar("ensayo");
+  eliminar("resultado");
+  eliminar("ed");
+  eliminar("ei");
+  eliminar("fd");
+  eliminar("fi");
+}
+
+
+function eliminar(id){
+  imagen = document.getElementById(id); 
+  padre = imagen.parentNode;
+  padre.removeChild(imagen);  
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+var orden=(function(){
+
+let orden= [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+
+/*principio del bucle for externo*/
+for (let g=0; g<11; g++){
+  orden[g]=ordeni();
+}
+
+return orden;
+
+function ordeni(){
+let orden1=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+let quedan=[4,4,4,4,4];
+let eleccion=[1,2,3,4,5]; 
+
+/*principio del bucle for medio*/
+for (let j = 0; j < orden1.length; j++) {
+  
+orden1[j]=eleccion[Math.round((eleccion.length-1)*Math.random())];
+
+eleccion=[1,2,3,4,5];
+
+let index = eleccion.indexOf(orden1[j]);
+
+--quedan[index];
+
+/*principio del bucle for interno*/
+for (let i = quedan.length-1; i >= 0; i--) {
+  
+  if (eleccion[i]==orden1[j] || quedan[i]==0 || ((4-quedan[i])/(j+1))>0.2) {
+    
+    eleccion.splice(i,1);
+  }
+}/*final del bucle for interno*/
+}/*final del bucle for medio*/
+return orden1;
+}/*final del bucle for externo*/
+}())/*final funcion ordenAudios*/
+//----------------------------------------------------------------------------------------------------------------------
+  
+
+//----------------------------------------------------------------------------------------------------------------------
+var positivos=(function(){
+ 
+let positivos=[[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]; 
+
+/*principio del bucle for externo*/
+for (let g=0; g<11; g++){
+
+  positivos[g]=positivosi();
+}
+
+return positivos;
+
+function positivosi(){
+let positivos1=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+let restan=[10,10]; 
+let elegir=[0,1];
+
+/*principio del bucle for medio*/
+for (let j = 0; j < positivos1.length; j++) {
+  
+positivos1[j]=elegir[Math.round((elegir.length-1)*Math.random())];
+
+elegir=[0,1];
+
+let index = elegir.indexOf(positivos1[j]);
+
+--restan[index];
+
+/*principio del bucle for interno*/
+for (let i = restan.length-1; i >= 0; i--) {
+  
+  if (/*(elegir[i]==positivos[j] && elegir[i]==positivos[j-1]) ||*/ restan[i]==0 || ((10-restan[i])/(j+1))>0.55) {
+    
+    elegir.splice(i,1);
+  }
+}/*final del bucle for interno*/
+}/*final del bucle for medio*/
+return positivos1;
+}/*final del bucle for externo*/
+}())/*final funcion repatro positivos*/
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+ 
+window.addEventListener("load",comenzar,false);
+
+
+ 
+  
+
+
+</script>
+
+</head>
+
+
+<body>
+
+<audio src="audios/f1a1.mp3"  id="f1a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f1a2.mp3"  id="f1a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f1a3.mp3"  id="f1a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f1a4.mp3"  id="f1a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f1a5.mp3"  id="f1a5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f2a1.mp3"  id="f2a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f2a2.mp3"  id="f2a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f2a3.mp3"  id="f2a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f2a4.mp3"  id="f2a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f2a5.mp3"  id="f2a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f2b1.mp3"  id="f2b1">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f3a1.mp3"  id="f3a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f3a2.mp3"  id="f3a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f3a3.mp3"  id="f3a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f3a4.mp3"  id="f3a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f3a5.mp3"  id="f3a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f3b1.mp3"  id="f3b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f3b2.mp3"  id="f3b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f3b3.mp3"  id="f3b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f3b4.mp3"  id="f3b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f3b5.mp3"  id="f3b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f4a1.mp3"  id="f4a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f4a2.mp3"  id="f4a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f4a3.mp3"  id="f4a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f4a4.mp3"  id="f4a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f4a5.mp3"  id="f4a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f4b1.mp3"  id="f4b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f4b2.mp3"  id="f4b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f4b3.mp3"  id="f4b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f4b4.mp3"  id="f4b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f4b5.mp3"  id="f4b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f5a1.mp3"  id="f5a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f5a2.mp3"  id="f5a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f5a3.mp3"  id="f5a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f5a4.mp3"  id="f5a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f5a5.mp3"  id="f5a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f5b1.mp3"  id="f5b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f5b2.mp3"  id="f5b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f5b3.mp3"  id="f5b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f5b4.mp3"  id="f5b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f5b5.mp3"  id="f5b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f6a1.mp3"  id="f6a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f6a2.mp3"  id="f6a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f6a3.mp3"  id="f6a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f6a4.mp3"  id="f6a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f6a5.mp3"  id="f6a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f6b1.mp3"  id="f6b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f6b2.mp3"  id="f6b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f6b3.mp3"  id="f6b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f6b4.mp3"  id="f6b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f6b5.mp3"  id="f6b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f7a1.mp3"  id="f7a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f7a2.mp3"  id="f7a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f7a3.mp3"  id="f7a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f7a4.mp3"  id="f7a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f7a5.mp3"  id="f7a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f7b1.mp3"  id="f7b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f7b2.mp3"  id="f7b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f7b3.mp3"  id="f7b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f7b4.mp3"  id="f7b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f7b5.mp3"  id="f7b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f8a1.mp3"  id="f8a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f8a2.mp3"  id="f8a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f8a3.mp3"  id="f8a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f8a4.mp3"  id="f8a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f8a5.mp3"  id="f8a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f8b1.mp3"  id="f8b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f8b2.mp3"  id="f8b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f8b3.mp3"  id="f8b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f8b4.mp3"  id="f8b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f8b5.mp3"  id="f8b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f9a1.mp3"  id="f9a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f9a2.mp3"  id="f9a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f9a3.mp3"  id="f9a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f9a4.mp3"  id="f9a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f9a5.mp3"  id="f9a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f9b1.mp3"  id="f9b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f9b2.mp3"  id="f9b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f9b3.mp3"  id="f9b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f9b4.mp3"  id="f9b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f9b5.mp3"  id="f9b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f10a1.mp3"  id="f10a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f10a2.mp3"  id="f10a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f10a3.mp3"  id="f10a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f10a4.mp3"  id="f10a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f10a5.mp3"  id="f10a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f10b1.mp3"  id="f10b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f10b2.mp3"  id="f10b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f10b3.mp3"  id="f10b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f10b4.mp3"  id="f10b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f10b5.mp3"  id="f10b5">Su navegador no soporta este audio</audio>
+
+
+
+<audio src="audios/f11a1.mp3"  id="f11a1">Su navegador no soporta este audio</audio>
+<audio src="audios/f11a2.mp3"  id="f11a2">Su navegador no soporta este audio</audio>
+<audio src="audios/f11a3.mp3"  id="f11a3">Su navegador no soporta este audio</audio>
+<audio src="audios/f11a4.mp3"  id="f11a4">Su navegador no soporta este audio</audio>
+<audio src="audios/f11a5.mp3"  id="f11a5">Su navegador no soporta este audio</audio>
+
+<audio src="audios/f11b1.mp3"  id="f11b1">Su navegador no soporta este audio</audio>
+<audio src="audios/f11b2.mp3"  id="f11b2">Su navegador no soporta este audio</audio>
+<audio src="audios/f11b3.mp3"  id="f11b3">Su navegador no soporta este audio</audio>
+<audio src="audios/f11b4.mp3"  id="f11b4">Su navegador no soporta este audio</audio>
+<audio src="audios/f11b5.mp3"  id="f11b5">Su navegador no soporta este audio</audio>
+
+
+<audio src="audios/muybien.mp3" id="muybien">Su navegador no soporta este audio</audio>
+
+
+<img src="imagenes/gifs/gif001.gif" id="gif"></img>
+
+<button class="redondos" id="bt1"></button> 
+<button class="redondos" id="bt2"></button> 
+<button class="redondos" id="bt3"></button> 
+
+<aside id="fase">Fase <output type="text" id="nfase"></output></aside>
+<aside id="ensayo">Ensayo <output type="text" id="nensayo"></output></aside>
+<button id="resultado">Resultado</button>
+<div id="raya"></div>
+<button class="flechas" id="ed">></button>
+<button class="flechas" id="ei"><</button>
+<button class="flechas" id="fd">></button>
+<button class="flechas" id="fi"><</button>
+
+
+  
+</body>
+</html>

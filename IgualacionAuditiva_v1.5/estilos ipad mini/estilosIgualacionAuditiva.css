@@ -1,0 +1,188 @@
+.redondos{
+  position: absolute;
+  width: 22vw;
+  height: 22vw;
+  margin: auto;
+  padding: 6vw;
+  background: linear-gradient(135deg, #89f7fe, #66a6ff);
+  border-radius: 50%;
+  border: 0.03vw solid #000000;
+  box-shadow: #999 0.42vw 0.47vw 0.26vw;    
+}
+
+.redondos:hover{
+  background: linear-gradient(135deg, #ffd700, #ffb000);
+  border: 0.05vw solid #440000;
+  border-radius: 50%;
+  box-shadow: #ddd 0.42vw 0.47vw 0.26vw;
+}
+
+#bt1 {	
+	top: 8vh;
+  left: 39vw; 
+}
+
+#bt2{	
+	bottom: 8vh;
+  	left: 12vw;  		
+}
+
+#bt3{	
+	bottom: 8vh;
+  	right: 12vw;  	
+}
+
+#barra{
+  position: absolute;
+  right: 12vw;
+  width: 10vw;
+  height: 1vw;
+  background-color: #777777;
+  margin: auto;
+  padding: 0.2vw;
+  /*border: 0.03vw solid #000000;*/
+  border-radius: 5%;
+  box-shadow: #999 0.22vw 0.27vw 0.1vw;
+}
+
+aside{
+  display:inline;
+  font: 1.4vw Verdana;  
+  color:rgba(0, 0, 0, 0.9);  
+  text-align: left;  
+}
+
+#fase{
+  position: absolute;
+  top: 2vh;
+  right: 13.5vw;  
+  text-align: left;
+}
+
+#ensayo{
+  position: absolute;
+  top: 7vh;
+  right: 13.5vw;
+  text-align: left;
+}
+
+#resultado{
+  position: absolute;
+  top: 2vh;
+  right: 2vw;
+  width: 7.5vw;
+  height: 6.5vw;
+  margin: auto;
+  padding: 0.2vw;
+  background: linear-gradient(135deg, #eeeeee, #111111);
+  /*border: 0.03vw solid #000000;*/
+  border-radius: 25%;
+  box-shadow: #ddd 0.42vw 0.47vw 0.26vw;
+  color: #ffffff;
+  font:bold 1vw verdana;
+}
+
+#resultado:hover{
+  background: linear-gradient(135deg, #ffffff, #000000);
+  /*border: 0.05vw solid #440000;*/
+  border-radius: 50%;  
+}
+
+#raya{
+  position: absolute;
+  top: 50vh;  
+  left: 5vw;
+  width: 90vw;
+  border-width: 0vh;
+  /*height: 0vw;
+  /*margin: auto;
+  /*padding: 0.2vw;*/  
+  border: 0.15vw dashed #777777;
+  /*border-color: #555555;*/
+}
+
+#nfase{
+  width: 2vw;
+  height: 3vh;
+  font-size: larger;
+  text-align: center;
+}
+
+#nensayo{
+  width: 2vw;
+  height: 3vh;
+  font-size: larger;
+  text-align: center;
+}
+
+#gif{
+  position: absolute;  
+  top: 0vh;
+  left: 0vw;
+  width: 100vw;
+  height: 100vh; 
+  visibility: hidden; 
+}
+
+.dibus{
+  position: absolute;
+  width: 13.5vw;
+  height: 13.5vw;    
+  padding: 4.3vw;
+}
+
+/*.dibus:hover{ 
+ 
+  background: linear-gradient(135deg, #ffd700, #ffb000);
+  border: 0.05vw solid #440000;
+  border-radius: 50%;
+  box-shadow: #ddd 0.42vw 0.47vw 0.26vw;
+}
+*/
+
+#dibu1 {  
+  top: 8vh;
+  left: 39vw; 
+}
+
+#dibu2{ 
+  bottom: 8vh;
+    left: 12vw;     
+}
+
+#dibu3{ 
+  bottom: 8vh;    
+  right: 12vw;    
+}
+
+.flechas{
+  width: 4vw;
+  height: 3vw;
+  font: 1.7vw verdana;
+  background: white;
+  border: none;
+}
+
+#fd{
+   position: absolute;
+  top: 1vh;
+  right: 9.5vw;  
+}
+
+#fi{
+   position: absolute;
+  top: 1vh;
+  right: 21vw;
+}
+
+#ed{
+   position: absolute;
+  top: 6vh;
+  right: 9.5vw;
+}
+
+#ei{
+   position: absolute;
+  top: 6vh;
+  right: 21vw;
+}
