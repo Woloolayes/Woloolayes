@@ -1,6 +1,6 @@
 function memoria(){
 	// menu aspecto del area de lectura
-	if (localStorage.getItem("toppizarra") != null) {
+	if (localStorage.getItem("toppizarra1") != null) {
 		toppizarra = parseFloat(localStorage.getItem("toppizarra1"));
 		leftpizarra = parseFloat(localStorage.getItem("leftpizarra1"));
 
@@ -20,7 +20,7 @@ function memoria(){
 	}
 
 	// menu velocidad de lectura
-	if (localStorage.getItem("fijacionesportest") != null) {	
+	if (localStorage.getItem("fijacionesportest1") != null) {	
 		fijacionesportest = parseFloat(localStorage.getItem("fijacionesportest1"));
 		tamanofijacion = parseFloat(localStorage.getItem("tamanofijacion1"));
 		fijacionesporsegundo = parseFloat(localStorage.getItem("fijacionesporsegundo1"));
