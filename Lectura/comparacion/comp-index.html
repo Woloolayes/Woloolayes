@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Seguimiento</title>
+<link rel="stylesheet" href="estilosComp.css"/>
+<script src="menus.js"></script>
+<script src="duras.js"></script>
+<script src="accesorio.js"></script>
+
+<script>
+
+
+// VARIABLES DE FLUJO DE PROGRAMA ************************************************************************************
+
+var bala = 0;
+
+ 
+ 
+
+
+// VARIABLES DE CONFIGURACION ****************************************************************************************
+
+var espacio = "\u00a0";
+
+// VARIABLES DEL JUEGO ***********************************************************************************************
+
+var tiempo=500;
+var turno=0;
+var objetivo=[];
+var antiobjetivo=[];
+var muestra=[];
+var muestra1=[];
+var cuentaturnos=0;
+var siguienteantiobjetivo=0;
+var turnosparaantiobjetivo=[];
+var int1=0; // interrupción para que no empiece la prueba hasta hacer click. mientras, sólo se vera la primera fijacion para aprehender las cifras.
+var int2=0; // vigila donde no puede haber muestra con antiobjetivo. En la función turnosmuestra().
+var turnosconantiobjetivo=[];
+var contenido=[];
+var mover;	// la usaremos para manejar el setInterval que moverá la muestra según el campo fijacionesporsegundo.
+var aciertos=0;
+var fallos=0;	// contabiliza pulsaciones erradas. 
+var pasadas=0; 	// contabiliza cuando se nos pasa sin ver.
+var pulsaciones=[];
+var tecla=false; // registra cuando se pulsa una tecla.	
+var multaen=[];
+
+var a1 = document.createElement("audio");
+var a2 = document.createElement("audio");
+var a3 = document.createElement("audio");
+var a4 = document.createElement("audio");
+
+
+function comenzar(){
+	
+	memoria(); //accesorios.js
+
+	revolver();
+	
+}////////////////////FIN COMENZAR()///////////////////////////////////////////////////////////////////////////////////
+
+
+function round(){
+	objetivo = formaobjetivo();	
+	//console.log('aciertos: ', aciertos, 'pasadas: ', pasadas, 'fallos ', fallos);
+	if (turnosconantiobjetivo[siguienteantiobjetivo]==cuentaturnos)
+	{ 
+		antiobjetivo = formaantiobjetivo();
+		muestra=antiobjetivo;		
+		muestra1=objetivo;											// Si a este turno corresponde muestra falsa.
+		multaen.push(cuentaturnos+intervalorespuesta+1);
+		siguienteantiobjetivo++;
+	}else{
+		muestra=objetivo;
+		muestra1=objetivo;												// si no, muestra verdadera.
+	}
+	//console.log("muestra = ", muestra) //****Debug****
+	//console.log("muestra1 = ", muestra1) //****Debug****
+	if (int1==1){		
+		cuentaturnos++;										// muestra resultados cuando acabe el test en modos de juego.
+		if (cuentaturnos>fijacionesportest && bala>1){		// La segunda condición es para que no pare de moverse en modo ajustes
+			int1=0; // detiene el movimiento.
+			clearInterval(mover);
+			bala=5;	// ve a mostrar resultados
+			revolver();
+		}
+		if (cuentaturnos>fijacionesportest && bala==1){		// en modo ajustes se reinicia el test.
+			cuentaturnos = 0;
+			siguienteantiobjetivo = 0;						// y se continua con las mismas muestras.
+		}
+	}
+	
+	if (int1==1 && bala>1 && bala<5){									// en modos de juego las pulsaciones se puntuan.
+		document.addEventListener("keydown", function(){tecla=true;}, false);
+		puntua();
+	}else{	
+		document.removeEventListener("keydown", function(){tecla=true;}, false);
+	}
+
+	if(cuentaturnos<=fijacionesportest){
+	pinta();
+	}
+}
+
+
+function puntua(){
+	if (tecla==true && cuentaturnos>1){
+
+		if (multaen.length>0){
+			a1.currentTime=0;
+			a1.play();
+			multaen.splice(0,1);				
+			aciertos++;
+		}else{
+			a2.currentTime=0;
+			a2.play();
+			fallos++;
+			}	
+	}else if(cuentaturnos==multaen[0] && cuentaturnos>0){
+		a3.currentTime=0;
+		a3.play();
+		pasadas++;
+		multaen.splice(0,1);
+		}			
+
+	tecla = false;
+}
+
+
+function pinta(){
+
+	switch(bala) {
+		case 1: 		// Controles del área de lectura.
+		case 2: 		// Práctica. 
+			borrapizarra();
+			let x = leftpizarra;
+			let y = toppizarra;
+			let z = 0; // lleva la cuenta de los turnos
+			contenidopizarra();	//esta función actualiza el vector contenido[], que tiene los guiones y la muestra (verdadera o falsa) para el paso actual
+			//console.log(contenido)//****Debug****
+			//for (let j = altopizarra - 1; j >= 0; j--){	//bucle para crear cada uno de los renglones
+
+				x = leftpizarra;
+
+				let ancho = 2*tamanofijacion+separacionmuestras
+				for (let i = 0; i < ancho; i++) { //bucle para crear todos los caracteres del renglón	 
+
+					let p = document.createElement("p");
+					p.append(contenido[z]);
+					//p.append("-");
+					p.style.position = "absolute";
+					p.style.top = y +"px";
+					p.style.left = x +"px";
+					p.setAttribute("class", "tiza");
+					p.style.fontSize = ancholetra + "px";
+					document.body.appendChild(p);
+					x += separletras;
+					z++;
+				}
+
+				//y += altorenglon; 
+
+			//}	
+			z = 0;
+			break;
+			
+	  	case 3: 		
+	  	case 4: 		// Competición
+
+			break;
+
+		default:
+	    	return 0;
+	}    	
+}
+
+
+function responsive(){
+
+	contadoracero() // aciertos y fallos = 0
+
+	switch(bala) {
+	  case 0:
+	    menugeneral();
+	    break;
+	  case 1: 		// Controles de lectura
+	    separacionmuestras = parseInt(ancholecturainput.value);
+		ancholetra = parseInt(ancholetrainput.value);
+		separletras = parseInt(separletrasinput.value);
+
+		fijacionesportest = parseInt(fijacionesportestinput.value);
+		tamanofijacion = parseInt(tamanofijacioninput.value);
+		fijacionesporsegundo = parseFloat(fijacionesporsegundoinput.value);
+		proporcionmuestras = parseInt(proporcionmuestrasinput.value);
+		intervalorespuesta = parseInt(intervalorespuestainput.value);
+
+		tiempo=1000/fijacionesporsegundo;
+
+		
+		//**************************************************************************
+
+		
+		turnosmuestra();	// genera un vector (turnosconantiobjetivo) con los turnos donde se mostrará la muestra falsa
+
+		
+
+		
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - 1.56 * ancholetra; // los coeficientes 1.56 y 1.9 
+		leftpizarra = (window.innerWidth / 2) - ((((2*tamanofijacion+separacionmuestras - 1) * separletras) + ancholetra/1.9) / 2); // los he calculado a ojo.
+		// siguiente paso a pintar
+		turno = 0;
+		cuentaturnos = 0;
+		siguienteantiobjetivo = 0;	
+	    //objetivo = formaobjetivo();
+		// pinta lo nuevamente definido.
+		
+
+		
+		clearInterval(mover);
+		mover = setInterval(round,tiempo);
+
+	    break;
+	  case 2: 		// Práctica.
+
+
+		turnosmuestra();	// genera un vector (turnosconantiobjetivo) con los turnos donde se mostrará la muestra falsa
+		//console.log(turnosconantiobjetivo);
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((2*tamanofijacion+separacionmuestras  - 1) * separletras) + ancholetra/1.9) / 2);
+		// siguiente paso a pintar
+		turno = 0;
+		cuentaturnos = 0;
+		siguienteantiobjetivo = 0;	
+	    //objetivo = formaobjetivo();
+		// pinta lo nuevamente definido.
+		
+		document.addEventListener("keydown", function(){int1=1;} ,false);
+		
+		clearInterval(mover);
+		mover = setInterval(round,tiempo);
+
+		break;
+	  case 3: 		
+
+	  	borrapizarra()	
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((2*tamanofijacion+separacionmuestras  - 1) * separletras) + ancholetra/1.9) / 2);
+		// pinta lo nuevamente definido
+		pinta();
+	  case 4: 		// Competición
+	    borrapizarra()	
+		// centrar pizarra
+		toppizarra = (window.innerHeight / 2) - 1.56 * ancholetra;
+		leftpizarra = (window.innerWidth / 2) - ((((2*tamanofijacion+separacionmuestras  - 1) * separletras) + ancholetra/1.9) / 2);
+		// pinta lo nuevamente definido
+		pinta();
+	    break;
+	  case 3:
+	    resultado();
+	    break;
+	  default:
+	    return 0;
+	}	
+}
+
+
+
+function revolver(){
+
+	switch(bala) {
+	  case 0:
+	    menugeneral(); //menus.js
+	    int1=0;
+	    break;
+	  case 1: 				// controles lectura
+	  	turno=0;
+	    menuseguimiento(); //menus.js	// despliega la tabla de controles y luego manda a responsive()
+	    int1=1; 			// pizarra en movimiento sin esperar pulsación (como en modo práctica)
+	    break;
+	  case 2: 				// Práctica. 
+	  	borrapagina();
+	  	cargaraudios();
+	    responsive();
+	    break;
+	  case 3: 				// Práctica
+	  	
+	  	break;
+	  case 4: 				// Competición
+	  	turnosmuestra();
+	    break;
+	  case 5:
+	    muestraresultados();
+	    break;
+	  case 6:
+	    cuentasjugador();
+	    break;
+	  default:
+	    return 0;
+	}
+}
+
+
+
+window.addEventListener("load",comenzar,false);
+
+</script>
+
+</head>
+
+<body>
+
+
+
+</body>
+</html>

@@ -1,0 +1,76 @@
+body{
+    background: linear-gradient(135deg, #ffd700, #ffb000);
+    background-image: url("../fondopapel.jpg");
+    /*background-repeat:no-repeat;*/
+	background-size: cover;
+	background-position: center;
+	background.z-index: -1;
+}
+
+div{
+	background-image: url("../fondopapel.jpg");
+	position: absolute;
+	width: auto;
+	z-index:+11;
+}
+
+p{
+	visibility: visible;
+	font-family: fantasy;
+	z-index:+10;
+}
+
+input{
+	background-image: url("../fondopapel.jpg");
+	width: 6.5vh;
+	background: #ffd700;
+}
+
+button{
+	color: white;
+	font-weight: 900;
+	font-size: 1.8vh;
+}
+
+button:hover{
+	border-color: #dddddd;
+	border-width: 0.5vh;
+	font-size: 2.1vh;
+}
+
+#botonaceptar{
+	background: green;
+	float: left;
+	width: 50%;
+	height: 4vh;
+}
+
+#botoncancelar{
+	background: red;
+	float: right;
+	width: 50%;
+	height: 4vh;
+}
+
+.neon:hover{
+	color: #ff8000;
+	text-shadow:
+		0 0 3px rgba(255,178,0,1),
+		0 0 6px rgba(255,178,0,1),
+		0 0 9px rgba(255,178,0,1),
+		0 0 12px rgba(127,104,38,1),
+		0 0 15px rgba(127,104,38,1),
+		0 0 18px rgba(127,104,38,1),
+		0 0 21px rgba(127,104,38,1),
+		0 0 24px rgba(127,104,38,1),
+		0 0 27px rgba(127,104,38,1);
+}
+
+#resultados{
+	position: absolute;	
+	top: 10vh;
+	left: 28vw;
+	/*height: 9vh;
+	width: 7vw;*/
+	font-size: 3vw;
+}
