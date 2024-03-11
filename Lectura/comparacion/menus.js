@@ -190,18 +190,18 @@ function menuseguimiento(){
 	controles1.addEventListener("click", responsive, false);
 
 	b1.addEventListener("click", function(){				// Botón Aceptar, memoriza nuevas variables y regresa a menú principal.
-		localStorage.setItem("toppizarra",toppizarra);
-		localStorage.setItem("leftpizarra",leftpizarra);
+		localStorage.setItem("toppizarra1",toppizarra);
+		localStorage.setItem("leftpizarra1",leftpizarra);
 		//localStorage.setItem("altopizarra",altopizarra);
-		localStorage.setItem("anchopizarra",separacionmuestras);
-		localStorage.setItem("ancholetra",ancholetra);
-		localStorage.setItem("separletras",separletras);
+		localStorage.setItem("anchopizarra1",separacionmuestras);
+		localStorage.setItem("ancholetra1",ancholetra);
+		localStorage.setItem("separletras1",separletras);
 		//localStorage.setItem("altorenglon",altorenglon);
 
-		localStorage.setItem("fijacionesportest",fijacionesportest);
-		localStorage.setItem("tamanofijacion",tamanofijacion);
-		localStorage.setItem("fijacionesporsegundo",fijacionesporsegundo);
-		localStorage.setItem("proporcionmuestras",proporcionmuestras);
+		localStorage.setItem("fijacionesportest1",fijacionesportest);
+		localStorage.setItem("tamanofijacion1",tamanofijacion);
+		localStorage.setItem("fijacionesporsegundo1",fijacionesporsegundo);
+		localStorage.setItem("proporcionmuestras1",proporcionmuestras);
 		//localStorage.setItem("intervalorespuesta",intervalorespuesta);
 
 		bala = 0;
