@@ -1,14 +1,14 @@
 function memoria(){
 	// menu aspecto del area de lectura
 	if (localStorage.getItem("toppizarra") != null) {
-		toppizarra = parseFloat(localStorage.getItem("toppizarra"));
-		leftpizarra = parseFloat(localStorage.getItem("leftpizarra"));
+		toppizarra = parseFloat(localStorage.getItem("toppizarra1"));
+		leftpizarra = parseFloat(localStorage.getItem("leftpizarra1"));
 
 		
-		separacionmuestras = parseFloat(localStorage.getItem("anchopizarra")); 	// separación de las muestras (en caracteres)
+		separacionmuestras = parseFloat(localStorage.getItem("anchopizarra1")); 	// separación de las muestras (en caracteres)
 
-		ancholetra = parseFloat(localStorage.getItem("ancholetra"));
-		separletras = parseFloat(localStorage.getItem("separletras"));
+		ancholetra = parseFloat(localStorage.getItem("ancholetra1"));
+		separletras = parseFloat(localStorage.getItem("separletras1"));
 	}else{					// valores por defecto al borrar el historial
 		toppizarra = 0;
 		leftpizarra = 0;
@@ -21,11 +21,11 @@ function memoria(){
 
 	// menu velocidad de lectura
 	if (localStorage.getItem("fijacionesportest") != null) {	
-		fijacionesportest = parseFloat(localStorage.getItem("fijacionesportest"));
-		tamanofijacion = parseFloat(localStorage.getItem("tamanofijacion"));
-		fijacionesporsegundo = parseFloat(localStorage.getItem("fijacionesporsegundo"));
-		proporcionmuestras = parseFloat(localStorage.getItem("proporcionmuestras"));
-		intervalorespuesta = parseFloat(localStorage.getItem("intervalorespuesta"));
+		fijacionesportest = parseFloat(localStorage.getItem("fijacionesportest1"));
+		tamanofijacion = parseFloat(localStorage.getItem("tamanofijacion1"));
+		fijacionesporsegundo = parseFloat(localStorage.getItem("fijacionesporsegundo1"));
+		proporcionmuestras = parseFloat(localStorage.getItem("proporcionmuestras1"));
+		intervalorespuesta = parseFloat(localStorage.getItem("intervalorespuesta1"));
 	}else{					// valores por defecto al borrar el historial
 		fijacionesportest = 100;
 		tamanofijacion = 2;
