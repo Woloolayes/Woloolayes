@@ -117,12 +117,13 @@ function puntua(){
 			a2.play();
 			fallos++;
 			}	
-	}else if(cuentaturnos==multaen[0]){
+	}
+	if(cuentaturnos==multaen[0] && cuentaturnos>1){
 		a3.currentTime=0;
 		a3.play();
 		pasadas++;
 		multaen.splice(0,1);
-		}			
+	}			
 
 	tecla = false;
 }
