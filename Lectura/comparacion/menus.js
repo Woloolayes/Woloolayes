@@ -202,7 +202,7 @@ function menuseguimiento(){
 		localStorage.setItem("tamanofijacion1",tamanofijacion);
 		localStorage.setItem("fijacionesporsegundo1",fijacionesporsegundo);
 		localStorage.setItem("proporcionmuestras1",proporcionmuestras);
-		//localStorage.setItem("intervalorespuesta",intervalorespuesta);
+		localStorage.setItem("intervalorespuesta1",intervalorespuesta);
 
 		bala = 0;
 		revolver();
