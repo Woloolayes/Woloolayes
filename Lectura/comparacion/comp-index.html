@@ -69,7 +69,8 @@ function round(){
 		antiobjetivo = formaantiobjetivo();
 		muestra=antiobjetivo;		
 		muestra1=objetivo;											// Si a este turno corresponde muestra falsa.
-		multaen.push(cuentaturnos+intervalorespuesta+1);
+		multaen.push(+cuentaturnos+intervalorespuesta+1);
+		//console.log('multaen[0]: ', multaen[0])//****debug****
 		siguienteantiobjetivo++;
 	}else{
 		muestra=objetivo;
@@ -93,6 +94,7 @@ function round(){
 	
 	if (int1==1 && bala>1 && bala<5){									// en modos de juego las pulsaciones se puntuan.
 		document.addEventListener("keydown", function(){tecla=true;}, false);
+		//console.log("manda a puntua")//****debug****
 		puntua();
 	}else{	
 		document.removeEventListener("keydown", function(){tecla=true;}, false);
@@ -105,7 +107,8 @@ function round(){
 
 
 function puntua(){
-	console.log("puntua")//****debug****
+	//console.log("cuentaturnos: ",cuentaturnos)//****debug****
+	//console.log("multaen[0]: ",multaen[0])//****debug****
 	if (tecla==true && cuentaturnos>1){
 
 		if (multaen.length>0){
@@ -118,7 +121,7 @@ function puntua(){
 			a2.play();
 			fallos++;
 			}	
-	}else if(cuentaturnos==multaen[0] && cuentaturnos>0){
+	}else if(cuentaturnos==multaen[0]){
 		a3.currentTime=0;
 		a3.play();
 		pasadas++;
