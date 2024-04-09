@@ -243,6 +243,8 @@ function responsive(){
 		
 		document.addEventListener("keydown", function(){int1=1;} ,false);
 		
+		tiempo = 1000/fijacionesporsegundo;
+
 		clearInterval(mover);
 		mover = setInterval(round,tiempo);
 
