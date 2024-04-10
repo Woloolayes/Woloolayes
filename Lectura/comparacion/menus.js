@@ -105,7 +105,7 @@ function menuseguimiento(){
 	fijacionesporsegundoinput = document.createElement("input");		//************************ DEF Fijaciones/Segundo **************
 	fijacionesporsegundoinput.setAttribute ("type","number");
 	fijacionesporsegundoinput.setAttribute ("id","fijacionesporsegundoinput");
-	fijacionesporsegundoinput.setAttribute ("step","0.25");
+	fijacionesporsegundoinput.setAttribute ("step","0.05");
 	fijacionesporsegundoinput.setAttribute ("min","0.25");
 	p8.append("Fijaciones/Segundo");
 	cell8a.appendChild(p8);
