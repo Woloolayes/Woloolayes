@@ -32,6 +32,16 @@ table{
 .celdas:hover{  
   background-color: #66a6ff;
   }
+
+#resultados{
+  position: absolute; 
+  top: 10vh;
+  left: 28vw;
+  /*height: 9vh;
+  width: 7vw;*/
+  font-size: 3vw;
+}
+
 </style>
 
 <script>
@@ -41,11 +51,16 @@ table{
 
   var sigpieza = 1;
 
-  var rango=3;
+  var rango = 3;
+
+  var tiempo = 0;
+
+  var fallos = 0;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 function comenzar(){
+fallos = 0;
 // CREA UN ORDEN ALEATORIO PARA LOS 100 NUMEROS
 orden = randomize();
 
@@ -55,9 +70,6 @@ orden = randomize();
 var body = document.getElementsByTagName("body")[0];
 // Creamos un elemento <table> y un elemento <tbody>
 var tabla = document.createElement("table");
-
-
-
 var tblBody = document.createElement("tbody");
 // Creamos las celdas
 for (var i = 0; i < rango; i++) {
@@ -86,7 +98,8 @@ tabla.appendChild(tblBody);
 // appends <table> into <body>
 body.appendChild(tabla);
 ////////////////////////////FIN CREAR TABLA, BASADO EN CASO GENERAL COPIADO DE UNA WEB//////////////////////////
-
+// activa cuenta de tiempo.
+tictac = setInterval(function () {tiempo++},1000);
 // ESPERA UN CLICK Y COMPRUEBA SI SE HA HECHO SOBRE LA IMAGEN CORRECTA
 tabla.setAttribute("id", "latabla");
 latabla=document.getElementById('latabla');
@@ -94,7 +107,12 @@ latabla.addEventListener("click", evaluar, false);
 
 // SI SE CAMBIA EL RANGO, SE VUELVE A COMENZAR CON UNA MATRIZ DE TAMAÑO RANGO X RANGO
 cambiarango=document.getElementById('rango');
-cambiarango.addEventListener("change", function(){eliminar("latabla"); rango=parseInt(cambiarango.value); sigpieza=1; comenzar();});
+cambiarango.addEventListener("change", function(){eliminar("latabla"); 
+                                                  rango=parseInt(cambiarango.value); 
+                                                  sigpieza=1;   
+                                                  clearInterval(tictac);
+                                                  tiempo = 0;                                                
+                                                  comenzar();});
 
 }// FIN COMENZAR.
 
@@ -107,9 +125,11 @@ function evaluar(event){
   let numero=parseInt(event.target.id);
   if (numero==sigpieza){
     // REPRODUCIR AUDIO ACIERTO O TERMINADO
-    if (numero==rango*rango){
+    if (numero==rango*rango){      
       terminado.currentTime=0;
       terminado.play();
+      clearInterval(tictac);
+      setTimeout(muestraresultados, 3700);
     }else{
       acierto.currentTime=0;
       acierto.play();
@@ -119,6 +139,7 @@ function evaluar(event){
   }else{
     fallo.currentTime=0;
     fallo.play();
+    fallos++;
   }
 }
 
@@ -145,11 +166,42 @@ return elorden;
 }
 
 
+function muestraresultados(){
+
+  // Eliminamos todos los elementos de la pantalla.
+  borrapagina();  
+  // al párrafo le añadimos un id para poder darle cualidades con CSS
+  let p = document.createElement("p");
+    p.setAttribute("id", "resultados");               
+    p.innerHTML =   "TOTAL ELEMENTOS = " + (rango*rango) + 
+            "<br> <br> SEGUNDOS = " + tiempo + 
+            "<br> <br> HAS PULSADO POR ERROR = " + fallos +            
+            "<br> <br> TU NIVEL HA SIDO DEL " + Math.min(Math.trunc(100 * ((1.1*rango*rango - fallos)/tiempo)),100) + "%";
+    document.body.appendChild(p);
+
+    // detener cuenta de tiempo.
+    clearInterval(tictac);
+}
+
+
+
 function eliminar(id){
   imagen = document.getElementById(id); 
   padre = imagen.parentNode;
   padre.removeChild(imagen);  
 }
+
+
+////////// ELIMINA TODOS LOS ELEMENTOS DE LA PAGINA //////////////////////////
+function borrapagina(){
+    let elbody = document.body;
+    if (elbody.hasChildNodes()) {
+  elbody.removeChild(elbody.childNodes[0]);
+  borrapagina();
+  }    
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 window.addEventListener("load",comenzar,false);  //  CARGA PAGINA ANTES DE LLAMAR FUNCION PRINCIPAL.
@@ -165,10 +217,10 @@ window.addEventListener("load",comenzar,false);  //  CARGA PAGINA ANTES DE LLAMA
   <input type="range" orient=vertical id="rango" min="3" max="10" value="3" step="1"></input>
 
 
-  <audio src="../audios/acierto.mp3" id="acierto">Su navegador no soporta este audio</audio>
-  <audio src="../audios/fallo.mp3" id="fallo">Su navegador no soporta este audio</audio>
-  <audio src="../audios/terminado.mp3" id="terminado">Su navegador no soporta este audio</audio>
-  <audio src="../audios/record.mp3" id="record">Su navegador no soporta este audio</audio>
+  <audio src="audios/acierto.mp3" id="acierto">Su navegador no soporta este audio</audio>
+  <audio src="audios/fallo.mp3" id="fallo">Su navegador no soporta este audio</audio>
+  <audio src="audios/terminado.mp3" id="terminado">Su navegador no soporta este audio</audio>
+  <audio src="audios/record.mp3" id="record">Su navegador no soporta este audio</audio>
   
     
 
